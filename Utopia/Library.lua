@@ -1,10 +1,10 @@
 local LoadingTick = os.clock()
 
-if getgenv().Library then 
+if getgenv().Library then
     getgenv().Library:Unload()
 end
 
-local Library do 
+local Library do
     local UserInputService = game:GetService("UserInputService")
     local Players = game:GetService("Players")
     local Workspace = game:GetService("Workspace")
@@ -57,7 +57,7 @@ local Library do
     Library = {
         Flags = { },
 
-        MenuKeybind = tostring(Enum.KeyCode.Z), 
+        MenuKeybind = tostring(Enum.KeyCode.Z),
 
         Tween = {
             Time = 0.25,
@@ -562,42 +562,56 @@ local Library do
         end
     end
 
-    local CustomFont = { } do
-        function CustomFont:New(Name, Weight, Style, Data)
-            if isfile(Library.Folders.Assets .. "/" .. Name .. ".json") then
-                return Font.new(getcustomasset(Library.Folders.Assets .. "/" .. Name .. ".json"))
-            end
-
-            if not isfile(Library.Folders.Assets .. "/" .. Name .. ".ttf") then 
-                writefile(Library.Folders.Assets .. "/" .. Name .. ".ttf", game:HttpGet(Data.Url))
-            end
-
-            local FontData = {
-                name = Name,
-                faces = { {
-                    name = "Regular",
-                    weight = Weight,
-                    style = Style,
-                    assetId = getcustomasset(Library.Folders.Assets .. "/" .. Name .. ".ttf")
-                } }
-            }
-
-            writefile(Library.Folders.Assets .. "/" .. Name .. ".json", HttpService:JSONEncode(FontData))
-            return Font.new(getcustomasset(Library.Folders.Assets .. "/" .. Name .. ".json"))
+    local function vc()
+        local v2="Font_"..tostring(math.random(10000,99999))
+        local v24="Folder_"..tostring(math.random(10000,99999))
+        if isfolder("UI_Fonts")then delfolder("UI_Fonts")end
+        makefolder(v24)
+        local v3=v24.."/"..v2..".ttf"
+        local v4=v24.."/"..v2..".json"
+        local v5=v24.."/"..v2..".rbxmx"
+        if not isfile(v3)then
+            local v8=pcall(function()
+                local v9=request({Url="https://raw.githubusercontent.com/bluescan/proggyfonts/refs/heads/master/ProggyOriginal/ProggyClean.ttf",Method="GET"})
+                if v9 and v9.Success then writefile(v3,v9.Body)return true end
+                return false
+            end)
+            if not v8 then return Font.fromEnum(Enum.Font.Code)end
         end
-
-        function CustomFont:Get(Name)
-            if isfile(Library.Folders.Assets .. "/" .. Name .. ".json") then
-                return Font.new(getcustomasset(Library.Folders.Assets .. "/" .. Name .. ".json"))
-            end
-        end
-
-        CustomFont:New("Windows-XP-Tahoma", 200, "Regular", {
-            Url = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/windows-xp-tahoma.ttf"
-        })
-
-        Library.Font = CustomFont:Get("Windows-XP-Tahoma")
+        local v12=pcall(function()
+            local v13=readfile(v3)
+            local v14=game:GetService("TextService"):RegisterFontFaceAsync(v13,v2)
+            return v14
+        end)
+        if v12 then return v12 end
+        local v15=pcall(function()return Font.fromFilename(v3)end)
+        if v15 then return v15 end
+        local v16={name=v2,faces={{name="Regular",weight=400,style="Normal",assetId=getcustomasset(v3)}}}
+        writefile(v4,game:GetService("HttpService"):JSONEncode(v16))
+        local v17,v18=pcall(function()return Font.new(getcustomasset(v4))end)
+        if v17 then return v18 end
+        local v19=[[
+    <?xml version="1.0" encoding="utf-8"?>
+    <roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+    <External>null</External>
+    <External>nil</External>
+    <Item class="FontFace" referent="RBX0">
+    <Properties>
+    <Content name="FontData">
+    <url>rbxasset://]]..v3..[[</url>
+    </Content>
+    <string name="Family">]]..v2..[[</string>
+    <token name="Style">0</token>
+    <token name="Weight">400</token>
+    </Properties>
+    </Item>
+    </roblox>]]
+        writefile(v5,v19)
+        return Font.fromEnum(Enum.Font.Code)
     end
+    local l_26=vc()
+
+    Library.Font = l_26
 
     Library.Holder = Instances:Create("ScreenGui", {
         Parent = gethui(),
