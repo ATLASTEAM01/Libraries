@@ -1,130 +1,3 @@
---[[
-    Made by samet.exe
-
-    Assign different flags to each element to prevent from configs overriding eachother
-    Example script is at the bottom
-
-    Documentation:
-        function Library:Window(Data: table
-        Name/name: string,
-        Size/size: UDim2,
-        GradientTitle/gradienttitle: table
-    )
-
-    function Window:Page(Data: table
-        Name/name: string,
-        Columns/columns: number
-    )
-
-    function Page:Section(Data: table
-        Name/name: string,
-        Side/side: number,
-    )
-
-    function Page:Playerlist()
-
-    function Section:Label(Data: table
-        Name/name: string,
-        Alignment/alignment: string
-    )
-
-    function Section:Toggle(Data: table
-        Name/name: string,
-        Default/default: boolean,
-        Flag/flag: string,
-        Risky/risky: boolean,
-        Callback/callback: function
-    )
-
-    function Section:Button(Data: table
-        Name/name: string,
-        Risky/risky: boolean,
-        Callback/callback: function
-    )
-
-    function Section:Slider(Data: table
-        Name/name: string,
-        Min/min: number,
-        Max/max: number,
-        Decimals/decimals: number,
-        Default/default: number,
-        Suffix/suffix: string,
-        Flag/flag: string,
-        Callback/callback: function
-    )
-
-    function Section:Textbox(Data: table
-        Name/name: string,
-        Default/default: string,
-        Placeholder/placeholder: string,
-        Flag/flag: string,
-        Callback/callback: function
-    )
-
-    function Section:Dropdown(Data: table
-        Name/name: string,
-        Items/items: table,
-        Default/default: string,
-        MaxSize/maxsize: number,
-        Flag/flag: string,
-        Multi/multi: boolean,
-        Callback/callback: function
-    )
-
-    function Section:Listbox(Data: table
-        Size/size: number,
-        Items/items: table,
-        Default/default: string,
-        Multi/multi: boolean,
-        Flag/flag: string,
-        Callback/callback: function
-    )
-
-    function Label:Keybind(Data: table
-        Name/name: string,
-        Mode/mode: string,
-        Default/default: EnumItem,
-        Flag/flag: string,
-        Callback/callback: function
-    )
-
-    function Label:Colorpicker(Data: table
-        Name/name: string,
-        Default/default: Color3,
-        Alpha/alpha: number,
-        Flag/flag: string,
-        Callback/callback: function
-    )
-
-    function Toggle:Colorpicker(Data: table
-        Name/name: string,
-        Default/default: Color3,
-        Alpha/alpha: number,
-        Flag/flag: string,
-        Callback/callback: function
-    )
-
-    function Toggle:Keybind(Data: table
-        Name/name: string,
-        Mode/mode: string,
-        Default/default: EnumItem,
-        Flag/flag: string,
-        Callback/callback: function
-    )
-
-    function Sections:Textbox(Data: table
-        Name/name: string,
-        Default/default: string,
-        Placeholder/placeholder: string,
-        Flag/flag: string,
-        Callback/callback: function
-    )
-
-    function Library:Watermark(Text: string)
-    function Library:Notification(Text: string, Duration: number, Color: Color3, Icon: table)
-    function Library:KeybindList()
-]]
-
 local LoadingTick = os.clock()
 
 if getgenv().Library then 
@@ -199,14 +72,13 @@ local Library do
             Themes = "testpath/Themes"
         },
 
-        Images = { -- you're welcome to reupload the images and replace it with your own links
+        Images = {
             ["Saturation"] = {"Saturation.png", "https://github.com/sametexe001/images/blob/main/saturation.png?raw=true" },
             ["Value"] = { "Value.png", "https://github.com/sametexe001/images/blob/main/value.png?raw=true" },
             ["Hue"] = { "Hue.png", "https://github.com/sametexe001/images/blob/main/horizontalhue.png?raw=true" },
             ["Checkers"] = { "Checkers.png", "https://github.com/sametexe001/images/blob/main/checkers.png?raw=true" },
         },
-
-        -- Ignore below
+        
         Pages = { },
         Sections = { },
 
@@ -593,7 +465,7 @@ local Library do
             end)
 
             Library:Connect(UserInputService.InputChanged, function(Input)
-                if Input.UserInputType == Enum.UserInputType.MouseMovement and Resizing then
+                if (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) and Resizing then
 					ResizeMax = Maximum or Gui.Parent.AbsoluteSize - Gui.AbsoluteSize
 
 					Delta = Start + UDim2New(0, Input.Position.X, 0, Input.Position.Y)
@@ -3357,46 +3229,46 @@ local Library do
         end)
 
         Items["Palette"]:Connect("InputBegan", function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                 SlidingPalette = true
                 Colorpicker:SlidePalette(Input)
             end
         end)
 
         Items["Palette"]:Connect("InputEnded", function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                 SlidingPalette = false
             end
         end)
 
         Items["Hue"]:Connect("InputBegan", function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                 SlidingHue = true
                 Colorpicker:SlideHue(Input)
             end
         end)
 
         Items["Hue"]:Connect("InputEnded", function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                 SlidingHue = false
             end
         end)
 
         Items["Alpha"]:Connect("InputBegan", function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                 SlidingAlpha = true
                 Colorpicker:SlideAlpha(Input)
             end
         end)
 
         Items["Alpha"]:Connect("InputEnded", function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                 SlidingAlpha = false
             end
         end)
 
         Library:Connect(UserInputService.InputChanged, function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseMovement then
+            if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
                 if SlidingPalette then
                     Colorpicker:SlidePalette(Input)
                 end
@@ -4178,7 +4050,7 @@ local Library do
 
         local Window = {
             Name = Data.Name or Data.name or "Window",
-            Size = Data.Size or Data.size or UDim2New(0, 563, 0, 558),
+            Size = Data.Size or Data.size or UDim2New(0, 563, 0.9, 0),
 
             GradientTitle = Data.GradientTitle or Data.gradienttitle or false,
 
@@ -4191,7 +4063,7 @@ local Library do
         }
 
         local Items = Components.Window({
-            Position = UDim2New(0, Camera.ViewportSize.X / 4, 0, Camera.ViewportSize.Y / 3),
+            Position = UDim2New(0.5, 0, 0.5, 0),
             Size = Window.Size,
             Parent = self.Holder,
             Draggable = true
