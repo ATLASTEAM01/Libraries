@@ -586,7 +586,7 @@ local Library do
         if v12 then return v12 end
         local v15=pcall(function()return Font.fromFilename(v3)end)
         if v15 then return v15 end
-        local v16={name=v2,faces={{name="Regular",weight=400,style="Normal",assetId=getcustomasset(v3)}}}
+        local v16={name=v2,faces={{name="Regular",weight=300,style="Normal",assetId=getcustomasset(v3)}}}
         writefile(v4,game:GetService("HttpService"):JSONEncode(v16))
         local v17,v18=pcall(function()return Font.new(getcustomasset(v4))end)
         if v17 then return v18 end
