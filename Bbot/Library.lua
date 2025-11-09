@@ -1,3 +1,5 @@
+getgenv().Library = {}
+
 local InputService, HttpService, GuiService, RunService, Stats, CoreGui, TweenService, SoundService, Workspace, Players = game:GetService("UserInputService"), game:GetService("HttpService"), game:GetService("GuiService"), game:GetService("RunService"), game:GetService("Stats"), game:GetService("CoreGui"), game:GetService("TweenService"), game:GetService("SoundService"), game:GetService("Workspace"), game:GetService("Players")
 local Camera, lp, gui_offset = Workspace.CurrentCamera, Players.LocalPlayer, GuiService:GetGuiInset().Y
 local mouse = lp:GetMouse()
@@ -15,7 +17,7 @@ getgenv().Library = {
     ConfigFlags = {},
     Connections = {},   
     Notifications = {Notifs = {}},
-    OpenElement = {}; 
+    OpenElement = {};
     EasingStyle = Enum.EasingStyle.Quint;
     TweeningSpeed = 0.25
 }
@@ -136,7 +138,6 @@ local Fonts = {}; do
         }
 
         writefile(Name .. ".font", HttpService:JSONEncode(Data))
-
         return getcustomasset(Name .. ".font");
     end
     
@@ -169,7 +170,6 @@ end
 function Library:Tween(Object, Properties, Info)
     local tween = TweenService:Create(Object, Info or TweenInfo.new(Library.TweeningSpeed, Library.EasingStyle, Enum.EasingDirection.InOut, 0, false, 0), Properties)
     tween:Play()
-    
     return tween
 end
 
@@ -189,7 +189,6 @@ function Library:Fade(obj, prop, vis, speed)
             obj[prop] = OldTransparency
         end
     end)
-
     return Tween
 end
 
@@ -239,7 +238,6 @@ end
 function Library:Hovering(Object)
     if type(Object) == "table" then 
         local Pass = false;
-
         for _,obj in Object do 
             if Library:Hovering(obj) then 
                 Pass = true
@@ -249,10 +247,13 @@ function Library:Hovering(Object)
     else 
         local y_cond = Object.AbsolutePosition.Y <= mouse.Y and mouse.Y <= Object.AbsolutePosition.Y + Object.AbsoluteSize.Y
         local x_cond = Object.AbsolutePosition.X <= mouse.X and mouse.X <= Object.AbsolutePosition.X + Object.AbsoluteSize.X
-
         return (y_cond and x_cond)
     end 
 end  
+
+function Library:SetDraggableLocked(Parent, isLocked)
+    Parent._isLocked = isLocked
+end
 
 function Library:Draggify(Parent)
     local Dragging = false 
@@ -260,6 +261,7 @@ function Library:Draggify(Parent)
     local InitialPosition 
 
     Parent.InputBegan:Connect(function(Input)
+        if Parent._isLocked then return end
         if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
             Dragging = true
             InitialPosition = Input.Position
@@ -274,6 +276,7 @@ function Library:Draggify(Parent)
     end)
 
     Library:Connection(InputService.InputChanged, function(Input, game_event) 
+        if Parent._isLocked then return end
         if Dragging and (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) then
             local Horizontal = Camera.ViewportSize.X
             local Vertical = Camera.ViewportSize.Y
@@ -292,7 +295,6 @@ function Library:Draggify(Parent)
                     Vertical - Parent.Size.Y.Offset
                 )
             )
-
             Parent.Position = NewPosition
         end
     end)
@@ -300,11 +302,9 @@ end
 
 function Library:Convert(str)
     local Values = {}
-
     for Value in string.gmatch(str, "[^,]+") do
         table.insert(Values, tonumber(Value))
     end
-
     if #Values == 4 then              
         return unpack(Values)
     else
@@ -314,25 +314,19 @@ end
 
 function Library:Lerp(start, finish, t)
     t = t or 1 / 8
-
     return start * (1 - t) + finish * t
 end
 
 function Library:ConvertEnum(enum)
     local EnumParts = {}
-    
     for part in string.gmatch(enum, "[%w_]+") do
         insert(EnumParts, part)
     end
-
     local EnumTable = Enum
-
     for i = 2, #EnumParts do
         local EnumItem = EnumTable[EnumParts[i]]
-
         EnumTable = EnumItem
     end
-    
     return EnumTable
 end
 
@@ -356,7 +350,6 @@ end
 local ConfigHolder;
 function Library:UpdateConfigList() 
     if not ConfigHolder then 
-        print("no exist :(")
         return 
     end
     
@@ -368,7 +361,6 @@ function Library:UpdateConfigList()
     end
 
     for _,v in List do 
-        print(_,v)
     end 
 
     ConfigHolder.RefreshOptions(List)
@@ -380,10 +372,10 @@ function Library:Keypicker(properties)
         Flag = properties.Flag or properties.Name or "Colorpicker",
         Callback = properties.Callback or function() end,
 
-        Color = properties.Color or color(1, 1, 1), 
+        Color = properties.Color or color(1, 1, 1),
         Alpha = properties.Alpha or properties.Transparency or 0,
         
-        Mode = properties.Mode or "Keypicker"; 
+        Mode = properties.Mode or "Keypicker",
 
         Open = false, 
         Items = {};
@@ -1136,7 +1128,7 @@ function Library:Keypicker(properties)
             Transparency = a 
         }
         
-        local Color = Items.InlineColorPicker.BackgroundColor3 
+        local Color = Items.InlineColorPicker.BackgroundColor3
         Items.RGBInput.Text = string.format("%s, %s, %s, ", Library:Round(Color.R * 255), Library:Round(Color.G * 255), Library:Round(Color.B * 255))
         Items.RGBInput.Text ..= Library:Round(1 - a, 0.01)
         
@@ -1259,7 +1251,7 @@ function Library:Themify(instance, theme, property)
     table.insert(themes.utility[theme][property], instance)
 end
 
-function Library:SaveGradient(instance, theme) 
+function Library:SaveGradient(instance, theme)
     table.insert(themes.gradients[theme], instance)
 end
 
@@ -1271,51 +1263,40 @@ function Library:RefreshTheme(theme, color)
             end
         end 
     end
-
     themes.preset[theme] = color 
 end 
 
 function Library:Connection(signal, callback)
     local connection = signal:Connect(callback)
-    
     table.insert(Library.Connections, connection)
-
     return connection 
 end
 
 function Library:CloseElement() 
     local IsMulti = typeof(Library.OpenElement)
-
     if not Library.OpenElement then 
         return 
     end
-
     for i = 1, #Library.OpenElement do
         local Data = Library.OpenElement[i]
-
         if Data.Ignore then 
             continue 
         end 
-
         Data.SetVisible(false)
         Data.Open = false
     end
-
     Library.OpenElement = {}
 end
 
 function Library:Create(instance, options)
     local ins = Instance.new(instance) 
-
     for prop, value in options do
         ins[prop] = value
     end
-
     if ins == "TextButton" then 
         ins["AutoButtonColor"] = false 
         ins["Text"] = ""
     end 
-    
     return ins 
 end
 
@@ -1323,7 +1304,6 @@ function Library:Unload()
     if Library.Items then 
         Library.Items:Destroy()
     end
-
     if Library.Other then 
         Library.Other:Destroy()
     end
@@ -1332,16 +1312,16 @@ function Library:Unload()
         connection:Disconnect() 
         connection = nil 
     end
-
     getgenv().Library = nil 
 end
 
 function Library:Window(properties)
+    local originalSize = properties.Size or dim2(0, 455, 0, 605)
     local windowSize
     if Library.IsMobile then
-        windowSize = dim2(0.9, 0, 0.8, 0) 
+        windowSize = dim2(0, originalSize.X.Offset, 0.8, 0)
     else
-        windowSize = properties.Size or dim2(0, 455, 0, 605)
+        windowSize = originalSize
     end
     
     local Cfg = {
@@ -1369,18 +1349,17 @@ function Library:Window(properties)
 
     local Items = Cfg.Items; do
         Items.Window = Library:Create( "Frame" , {
-            Parent = Library.Items,
-            Name = "\0",
+            Parent = Library.Items;
+            Name = "\0";
             Position = Library.IsMobile and dim2(0.5, 0, 0.5, 0) or dim2(0.5, -Cfg.Size.X.Offset / 2, 0.5, -Cfg.Size.Y.Offset / 2),
             AnchorPoint = Library.IsMobile and vec2(0.5, 0.5) or vec2(0, 0),
-            BorderColor3 = rgb(0, 0, 0),
-            Size = Cfg.Size,
-            BorderSizePixel = 0,
+            BorderColor3 = rgb(0, 0, 0);
+            Size = Cfg.Size;
+            BorderSizePixel = 0;
             BackgroundColor3 = themes.preset.outline
-        }); 
-        
+        });
         if not Library.IsMobile then
-            Items.Window.Position = dim2(0, Items.Window.AbsolutePosition.X, 0, Items.Window.AbsolutePosition.Y)
+             Items.Window.Position = dim2(0, Items.Window.AbsolutePosition.X, 0, Items.Window.AbsolutePosition.Y)
         end
         Library:Themify(Items.Window, "outline", "BackgroundColor3");
 
@@ -1897,9 +1876,11 @@ function Library:Window(properties)
         });
     end
 
-    do 
+    do
         Library:Draggify(Items.Window)
-        Library:Resizify(Items.Window)
+        if not Library.IsMobile then
+            Library:Resizify(Items.Window)
+        end
     end
 
     function Cfg.ToggleMenu(bool) 
@@ -1958,64 +1939,102 @@ function Library:Window(properties)
 
     function Cfg.ToggleKeybindList(bool)
         Items.Keybind_List.Visible = bool
-        print(bool)
     end
     
     return setmetatable(Cfg, Library)
 end 
 
-function Library:CreateMobileToggle(windowInstance)
+function Library:CreateMobileControls(windowInstance)
     local Cfg = {
-        Items = {}
+        Items = {},
+        IsWindowLocked = false
     }
 
     local Items = Cfg.Items; do
-        Items.Toggle = Library:Create("ImageButton", {
+        Items.Container = Library:Create("Frame", {
             Parent = Library.Items,
-            Name = "MobileToggle",
-            Size = dim2(0, 48, 0, 48),
-            Position = dim2(0, 15, 0.5, -24),
-            AnchorPoint = vec2(0, 0.5),
+            Name = "MobileControls",
+            Size = dim2(0, 52, 0, 100),
+            Position = dim2(1, -65, 0.5, -50),
+            AnchorPoint = vec2(0.5, 0.5),
             BackgroundTransparency = 1,
-            Image = "rbxassetid://133601737414791",
-            ScaleType = Enum.ScaleType.Fit,
             ZIndex = 100
         })
 
-        Items.Container = Library:Create("Frame", {
-            Parent = Items.Toggle,
-            Size = dim2(1, 0, 1, 0),
+        Library:Create("UIListLayout", {
+            Parent = Items.Container,
+            Padding = dim(0, 8),
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            HorizontalAlignment = Enum.HorizontalAlignment.Center
+        })
+        
+        Items.ToggleHolder = Library:Create("Frame", {
+            Parent = Items.Container,
+            Size = dim2(0, 48, 0, 48),
             BackgroundColor3 = themes.preset.inline,
-            ZIndex = Items.Toggle.ZIndex - 1
-        }); Library:Themify(Items.Container, "inline", "BackgroundColor3")
+        }); Library:Themify(Items.ToggleHolder, "inline", "BackgroundColor3")
 
-        local stroke = Library:Create("UIStroke", {
-            Color = themes.preset.outline,
-            Parent = Items.Container
-        }); Library:Themify(stroke, "outline", "Color")
+        Items.Toggle = Library:Create("ImageButton", {
+            Parent = Items.ToggleHolder,
+            Name = "ToggleUI",
+            Size = dim2(1, 0, 1, 0),
+            BackgroundTransparency = 1,
+            Image = "rbxassetid://133601737414791",
+            ScaleType = Enum.ScaleType.Fit
+        })
 
-        Items.Gradient = Library:Create("UIGradient", {
-            Rotation = 90,
+        local stroke = Library:Create("UIStroke", { Color = themes.preset.outline, Parent = Items.ToggleHolder }); 
+        Library:Themify(stroke, "outline", "Color")
+
+        local gradient = Library:Create("UIGradient", { Rotation = 90, Parent = Items.ToggleHolder, Color = rgbseq{rgbkey(0, themes.preset.inline), rgbkey(1, themes.preset.gradient)} });
+        Library:SaveGradient(gradient, "Selected");
+
+        Library:Create("Frame", { Parent = Items.ToggleHolder, Size = dim2(1, 0, 0, 3), BackgroundColor3 = themes.preset.accent });
+        
+        Items.LockHolder = Library:Create("Frame", {
             Parent = Items.Container,
-            Color = rgbseq{rgbkey(0, themes.preset.inline), rgbkey(1, themes.preset.gradient)}
-        }); Library:SaveGradient(Items.Gradient, "Selected");
+            Size = dim2(0, 48, 0, 32),
+            BackgroundColor3 = themes.preset.inline
+        }); Library:Themify(Items.LockHolder, "inline", "BackgroundColor3")
 
-        Items.Accent = Library:Create("Frame", {
-            Parent = Items.Container,
-            Size = dim2(1, 0, 0, 3),
-            BackgroundColor3 = themes.preset.accent
-        }); Library:Themify(Items.Accent, "accent", "BackgroundColor3")
+        Items.Lock = Library:Create("TextButton", {
+            Parent = Items.LockHolder,
+            Name = "LockWindow",
+            Size = dim2(1, 0, 1, 0),
+            BackgroundTransparency = 1,
+            FontFace = Library.Font,
+            Text = "Lock",
+            TextSize = 12,
+            TextColor3 = themes.preset.text_color
+        }); Library:Themify(Items.Lock.Label, "text_color", "TextColor3")
 
-        Library:Draggify(Items.Toggle)
+        local lockStroke = Library:Create("UIStroke", { Color = themes.preset.outline, Parent = Items.LockHolder });
+        Library:Themify(lockStroke, "outline", "Color")
+
+        local lockGradient = Library:Create("UIGradient", { Rotation = 90, Parent = Items.LockHolder, Color = rgbseq{rgbkey(0, themes.preset.inline), rgbkey(1, themes.preset.gradient)} });
+        Library:SaveGradient(lockGradient, "Selected");
+        
+        Library:Create("Frame", { Parent = Items.LockHolder, Size = dim2(1, 0, 0, 3), BackgroundColor3 = themes.preset.accent });
+        
+        Library:Draggify(Items.Container)
     end
 
     Items.Toggle.MouseButton1Click:Connect(function()
         if windowInstance.Tweening then return end
-        
         local isVisible = windowInstance.Items.Window.Visible
         windowInstance:ToggleMenu(not isVisible)
     end)
 
+    Items.Lock.MouseButton1Click:Connect(function()
+        Cfg.IsWindowLocked = not Cfg.IsWindowLocked
+        Library:SetDraggableLocked(windowInstance.Items.Window, Cfg.IsWindowLocked)
+        Items.Lock.Text = Cfg.IsWindowLocked and "Unlock" or "Lock"
+        if Cfg.IsWindowLocked then
+            Items.Lock.TextColor3 = themes.preset.accent
+        else
+            Items.Lock.TextColor3 = themes.preset.text_color
+        end
+    end)
     return setmetatable(Cfg, Library)
 end
 
@@ -2091,7 +2110,7 @@ function Library:Tab(properties)
         });	Library:Themify(Items.UIStroke, "outline", "Color");
         
         Items.Page = Library:Create( "Frame" , {
-            Parent = Library.Other; 
+            Parent = Library.Other;
             Name = "\0";
             Visible = false;
             BackgroundTransparency = 1;
@@ -2169,8 +2188,6 @@ function Library:Tab(properties)
             self.Items.FadeGradient.BackgroundTransparency = 0
         end 
 
-        
-
         self.TabInfo = Cfg.Items
     end
 
@@ -2191,7 +2208,6 @@ function Library:PlayerList(properties)
     local Cfg = {
         Players = {};
         Items = {};
-
         Selected;
     }   
 
@@ -2720,7 +2736,6 @@ function Library:PlayerList(properties)
             if player == Players.LocalPlayer then 
                 continue 
             end 
-
             Cfg.ModifyPriority("Neutral", Cfg.Players[player.Name])
         end
     end)
@@ -2754,7 +2769,6 @@ function Library:MultiSection(properties)
         
         Items = {};
         Store = {};
-
         TabInfo;
     };
 
@@ -2847,7 +2861,7 @@ function Library:MultiSection(properties)
             BorderSizePixel = 0;
             BackgroundColor3 = themes.preset.outline
         });	Library:Themify(Items.Outline, "outline", "BackgroundColor3")
-
+        
         Items.Inline = Library:Create( "Frame" , {
             Parent = Items.Section;
             Size = dim2(1, -2, Cfg.Size and 1 or 0, -4);
@@ -2925,7 +2939,7 @@ function Library:MultiSection(properties)
         
         Items.Elements = Library:Create( "Frame" , {
             BorderColor3 = rgb(0, 0, 0);
-            Parent = Items.Inline; 
+            Parent = Items.Inline;
             Name = "\0";
             Visible = true;
             BackgroundTransparency = 1;
@@ -2992,7 +3006,6 @@ function Library:MultiSection(properties)
 
     for _,tab in Cfg.Tabs do 
         local Data = {Items = {}}
-
         local SubItems = Data.Items; do 
             SubItems.Button = Library:Create( "TextButton" , {
                 Parent = Items.Buttons;
@@ -3059,10 +3072,10 @@ function Library:MultiSection(properties)
                 Parent = SubItems.Button;
                 ApplyStrokeMode = Enum.ApplyStrokeMode.Border
             });	Library:Themify(SubItems.UIStroke, "outline", "Color");
-                
+            
             SubItems.Elements = Library:Create( "Frame" , {
                 BorderColor3 = rgb(0, 0, 0);
-                Parent = Library.Other; 
+                Parent = Library.Other;
                 Name = "\0";
                 Visible = false;
                 BackgroundTransparency = 1;
@@ -3107,7 +3120,6 @@ function Library:MultiSection(properties)
         end)
 
         if not Cfg.TabInfo then
-            print("new tab")
             SubItems.Fill.Size = dim2(1, -2, 0, 1);
             SubItems.TextPadding.PaddingRight = dim(0, 8);
             Data.OpenTab()
@@ -3118,14 +3130,12 @@ function Library:MultiSection(properties)
 
     return unpack(Cfg.Store)
 end 
-        
+
 function Library:Section(properties)
     local Cfg = {
         Name = properties.name or properties.Name or "Section"; 
         Side = properties.side or properties.Side or "Left";
-
         Size = properties.size or properties.Size or nil;
-        
         Items = {};
     };
     
@@ -3300,10 +3310,8 @@ function Library:Toggle(properties)
         Flag = properties.Flag or properties.Name or "Toggle";
         Enabled = properties.Default or false;
         Callback = properties.Callback or function() end;
-
         Folding = properties.Folding or false;
         Collapsable = properties.Collapsing or true;
-
         Items = {};
     }
 
@@ -3478,9 +3486,7 @@ function Library:Toggle(properties)
     
     function Cfg.Set(bool)
         Cfg.Callback(bool)
-
         Library:Tween(Items.Accent, {BackgroundColor3 = bool and themes.preset.accent or themes.preset.inline})
-        
         Flags[Cfg.Flag] = bool
         
         if Cfg.Folding then
@@ -3499,24 +3505,20 @@ function Library:Toggle(properties)
     end)
 
     Cfg.Set(Cfg.Enabled)
-
     ConfigFlags[Cfg.Flag] = Cfg.Set
-
     return setmetatable(Cfg, Library)
 end 
-        
+
 function Library:Slider(properties) 
     local Cfg = {
         Name = properties.Name,
         Suffix = properties.Suffix or "",
         Flag = properties.Flag or properties.Name or "Slider",
         Callback = properties.Callback or function() end, 
-
         Min = properties.Min or 0,
         Max = properties.Max or 100,
         Intervals = properties.Decimal or 1,
         Value = properties.Default or 10, 
-
         Dragging = false,
         Items = {}
     } 
@@ -3683,10 +3685,8 @@ function Library:Slider(properties)
 
     function Cfg.Set(value)
         Cfg.Value = math.clamp(Library:Round(value, Cfg.Intervals), Cfg.Min, Cfg.Max)
-
         Items.Accent.Size = dim2((Cfg.Value - Cfg.Min) / (Cfg.Max - Cfg.Min), Cfg.Value == Cfg.Min and 0 or -2, 1, -2)
         Items.Value.Text = tostring(Cfg.Value) .. Cfg.Suffix
-
         Flags[Cfg.Flag] = Cfg.Value
         Cfg.Callback(Flags[Cfg.Flag])
     end
@@ -3697,13 +3697,11 @@ function Library:Slider(properties)
 
     Items.Minus.MouseButton1Down:Connect(function()
         Cfg.Value -= Cfg.Intervals
-
         Cfg.Set(Cfg.Value)
     end)
 
     Items.Plus.MouseButton1Down:Connect(function()
         Cfg.Value += Cfg.Intervals
-
         Cfg.Set(Cfg.Value)
     end)
 
@@ -3723,7 +3721,6 @@ function Library:Slider(properties)
 
     Cfg.Set(Cfg.Value)
     ConfigFlags[Cfg.Flag] = Cfg.Set
-
     return setmetatable(Cfg, Library)
 end 
 
@@ -3735,7 +3732,6 @@ function Library:Dropdown(properties)
         Callback = properties.Callback or function() end;
         Multi = properties.Multi or false;
         Scrolling = properties.Scrolling or false;
-
         Open = false;
         OptionInstances = {};
         MultiItems = {};
@@ -3938,7 +3934,6 @@ function Library:Dropdown(properties)
         });          
 
         table.insert(Cfg.OptionInstances, Button)
-
         return Button
     end
     
@@ -3948,14 +3943,13 @@ function Library:Dropdown(properties)
         end
 
         Items.DropdownElements.Position = dim2(0, Items.Outline.AbsolutePosition.X, 0, Items.Outline.AbsolutePosition.Y + 80)
-        Items.DropdownElements.Size = dim_offset(Items.Outline.AbsoluteSize.X + 1, 0)
+		Items.DropdownElements.Size = dim_offset(Items.Outline.AbsoluteSize.X + 1, 0)
         Items.DropdownElements.Visible = bool 
         Items.DropdownElements.Parent = bool and Library.Items or Library.Other; 
 
         if not Cfg.Multi then 
             Items.Icon.Text = bool and "+" or "-"
         end
-
         
         Library.OpenElement = Cfg
     end
@@ -4053,13 +4047,11 @@ function Library:Dropdown(properties)
 
     Items.Outline.MouseButton1Click:Connect(function()
         Cfg.Open = not Cfg.Open 
-
         Cfg.SetVisible(Cfg.Open)
     end)
 
     Library:Connection(InputService.InputBegan, function(input, game_event)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            print("clicked")
             if (Items.DropdownElements.Visible) and not Library:Hovering({Items.DropdownElements, Items.Dropdown}) then
                 Cfg.SetVisible(false)
                 Cfg.Open = false
@@ -4079,7 +4071,6 @@ end
 function Library:Label(properties)
     local Cfg = {
         Name = properties.Name or "Label",
-
         Items = {};
     }
 
@@ -4141,23 +4132,20 @@ function Library:Label(properties)
 
     return setmetatable(Cfg, Library)
 end
-        
+
 function Library:Colorpicker(properties) 
     local Cfg = {
         Name = properties.Name or "Color", 
         Flag = properties.Flag or properties.Name or "Colorpicker",
         Callback = properties.Callback or function() end,
-
-        Color = properties.Color or color(1, 1, 1), 
+        Color = properties.Color or color(1, 1, 1),
         Alpha = properties.Alpha or properties.Transparency or 0,
-        
         Open = false;
         Mode = properties.Mode or "Animation";
         Items = {};
     }
 
     local Picker = self:Keypicker(Cfg)
-
     local Items = Picker.Items; do
         Cfg.Items = Items
         Cfg.Set = Picker.Set
@@ -4165,7 +4153,6 @@ function Library:Colorpicker(properties)
     
     Cfg.Set(Cfg.Color, Cfg.Alpha)
     ConfigFlags[Cfg.Flag] = Cfg.Set
-
     return setmetatable(Cfg, Library)
 end 
 
@@ -4176,7 +4163,6 @@ function Library:Textbox(properties)
         Default = properties.Default or "",
         Flag = properties.Flag or properties.Name or "TextBox",
         Callback = properties.Callback or function() end,
-        
         Items = {};
     }
 
@@ -4284,9 +4270,7 @@ function Library:Textbox(properties)
     
     function Cfg.Set(text) 
         Flags[Cfg.Flag] = text
-
         Items.Input.Text = text
-
         Cfg.Callback(text)
     end 
     
@@ -4299,7 +4283,6 @@ function Library:Textbox(properties)
     end
 
     ConfigFlags[Cfg.Flag] = Cfg.Set
-
     return setmetatable(Cfg, Library)
 end
 
@@ -4308,17 +4291,13 @@ function Library:Keybind(properties)
         Flag = properties.Flag or properties.Name;
         Callback = properties.Callback or function() end;
         Name = properties.Name or nil; 
-
         Key = properties.Key or nil;
         Mode = properties.Mode or "Toggle";
         Active = properties.Default or false; 
-        
         Show = properties.ShowInList or true;
-
         Open = false;
         Binding;
         Ignore = false;
-
         Items = {}
     }
 
@@ -4508,62 +4487,50 @@ function Library:Keybind(properties)
 
     function Cfg.SetMode(mode) 
         Cfg.Mode = mode 
-
         if mode == "Always" then
             Cfg.Set(true)
         elseif mode == "Hold" then
             Cfg.Set(false)
         end
-
         Flags[Cfg.Flag].Mode = mode
     end
 
     function Cfg.Set(input)
         if type(input) == "boolean" then 
             Cfg.Active = input
-
             if Cfg.Mode == "Always" then 
                 Cfg.Active = true
             end
         elseif tostring(input):find("Enum") then 
             input = input.Name == "Escape" and "NONE" or input
-            
             Cfg.Key = input or "NONE"	
         elseif table.find({"Toggle", "Hold", "Always"}, input) then 
             if input == "Always" then 
                 Cfg.Active = true 
             end 
-
             Cfg.Mode = input
             Cfg.SetMode(Cfg.Mode) 
         elseif type(input) == "table" then
             input.Key = type(input.Key) == "string" and input.Key ~= "NONE" and Library:ConvertEnum(input.key) or input.Key
             input.Key = input.Key == Enum.KeyCode.Escape and "NONE" or input.Key
-
             Cfg.Key = input.Key or "NONE"
             Cfg.Mode = input.Mode or "Toggle"
-
             if input.Active then
                 Cfg.Active = input.Active
             end
-
             Cfg.SetMode(Cfg.Mode) 
         end 
 
         Cfg.Callback(Cfg.Active)
-
         local text = (tostring(Cfg.Key) ~= "Enums" and (Keys[Cfg.Key] or tostring(Cfg.Key):gsub("Enum.", "")) or nil)
         local __text = text and tostring(text):gsub("KeyCode.", ""):gsub("UserInputType.", "")
-
         Items.Key.Text = __text
 
         if Items.Keybinds then
             Items.Keybinds.TextTransparency = 1
             Library:Tween(Items.Keybinds, {TextTransparency = 0})
-
             Items.KeybindsStroke.Transparency = 1
             Library:Tween(Items.KeybindsStroke, {Transparency = 0})
-
             Items.Keybinds.Visible = Cfg.Active
             Items.Keybinds.Text = string.format("[%s]: %s", __text, Cfg.Name or Cfg.Flag or "Key")
         end 
@@ -4578,7 +4545,6 @@ function Library:Keybind(properties)
     function Cfg.SetVisible(bool)
         Items.Fade.BackgroundTransparency = 0
         Library:Tween(Items.Fade, {BackgroundTransparency = 1})
-
         Items.ModeHolder.Visible = bool 
         Items.ModeHolder.Position = dim2(0, Items.KeybindOutline.AbsolutePosition.X + 2, 0, Items.KeybindOutline.AbsolutePosition.Y + 74)
     end
@@ -4589,7 +4555,6 @@ function Library:Keybind(properties)
 
         Cfg.Binding = Library:Connection(InputService.InputBegan, function(keycode, game_event)  
             Cfg.Set(keycode.KeyCode ~= Enum.KeyCode.Unknown and keycode.KeyCode or keycode.UserInputType)
-            
             Cfg.Binding:Disconnect() 
             Cfg.Binding = nil
         end)
@@ -4597,7 +4562,6 @@ function Library:Keybind(properties)
 
     Items.KeybindOutline.MouseButton2Down:Connect(function()
         Cfg.Open = not Cfg.Open 
-
         Cfg.SetVisible(Cfg.Open)
     end)
 
@@ -4606,7 +4570,6 @@ function Library:Keybind(properties)
             if (Items.Dropdown.Items.DropdownElements.Visible and Items.ModeHolder.Visible) and not (Library:Hovering(Items.Dropdown.Items.DropdownElements) or Library:Hovering(Items.ModeHolder)) then 
                 Items.Dropdown.SetVisible(false)
                 Items.Dropdown.Visible = false
-
                 Cfg.SetVisible(false)
                 Cfg.Open = false;
             end 
@@ -4614,7 +4577,6 @@ function Library:Keybind(properties)
         
         if not game_event then
             local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
-
             if selected_key == Cfg.Key then 
                 if Cfg.Mode == "Toggle" then 
                     Cfg.Active = not Cfg.Active
@@ -4632,7 +4594,6 @@ function Library:Keybind(properties)
         end 
 
         local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
-
         if selected_key == Cfg.Key then
             if Cfg.Mode == "Hold" then 
                 Cfg.Set(false)
@@ -4646,12 +4607,11 @@ function Library:Keybind(properties)
 
     return setmetatable(Cfg, Library)
 end
-        
+
 function Library:Button(properties) 
     local Cfg = {
         Name = properties.Name or "TextBox",
         Callback = properties.Callback or function() end,
-                 
         Items = {};
     }
     
@@ -4731,7 +4691,6 @@ function Library:Button(properties)
     Items.Button.MouseButton1Click:Connect(function()
         Items.Name.TextColor3 = rgb(255, 255, 255)
         Library:Tween(Items.Name, {TextColor3 = themes.preset.text_color})
-        
         Cfg.Callback()
     end)
     
@@ -4771,10 +4730,9 @@ function Library:Configs(window)
 
     window.Tweening = true
     Section:Label({Name = "Menu Bind"}):Keybind({Name = "Menu Bind", ShowInList = false, Callback = function(bool) 
-        if window.Tweening then
+        if window.Tweening or Library.IsMobile then
             return 
         end 
-
         window.ToggleMenu(bool) 
     end, Default = true})
 
@@ -4795,7 +4753,6 @@ function Library:Configs(window)
 
     Section:Label({Name = "Inline"}):Colorpicker({Flag = "Inline", Callback = function(color, alpha) 
         Library:RefreshTheme("inline", color) 
-
         for _,seq in themes.gradients.Selected do 
             seq.Color = rgbseq{rgbkey(0, themes.preset.inline), rgbkey(1, themes.preset.gradient)}
         end 
@@ -4803,11 +4760,9 @@ function Library:Configs(window)
 
     Section:Label({Name = "Gradient"}):Colorpicker({Flag = "Gradient", Callback = function(color, alpha) 
         Library:RefreshTheme("gradient", color)
-
         for _,seq in themes.gradients.Selected do 
             seq.Color = rgbseq{rgbkey(0, themes.preset.inline), rgbkey(1, themes.preset.gradient)}
         end
-
         for _,seq in themes.gradients.Deselected do 
             seq.Color = rgbseq{rgbkey(0, themes.preset.gradient), rgbkey(1, themes.preset.background)}
         end
@@ -4823,7 +4778,6 @@ function Library:Configs(window)
     
     Section:Label({Name = "Background"}):Colorpicker({Flag = "Background", Callback = function(color, alpha) 
         Library:RefreshTheme("background", color) 
-
         for _,seq in themes.gradients.Deselected do 
             seq.Color = rgbseq{rgbkey(0, themes.preset.gradient), rgbkey(1, themes.preset.background)}
         end
@@ -4844,30 +4798,24 @@ end
 
 function Notifications:RefreshNotifications() 
     local offset = 50
-    
     for i, v in Notifications.Notifs do
         local Position = vec2(20, offset)
         Library:Tween(v, {Position = dim_offset(Position.X, Position.Y)})
         offset += (v.AbsoluteSize.Y + 10)
     end
-
     return offset
 end
 
 function Notifications:FadeNotifs(path, is_fading)
     local fading = is_fading and 1 or 0 
-    
     Library:Tween(path, {BackgroundTransparency = fading})
-
     for _, instance in path:GetDescendants() do 
         if not instance:IsA("GuiObject") then 
             if instance:IsA("UIStroke") then
                 Library:Tween(instance, {Transparency = fading})
             end
-
             continue
         end 
-
         if instance:IsA("TextLabel") then
             Library:Tween(instance, {TextTransparency = fading})
         elseif instance:IsA("Frame") then
@@ -4880,7 +4828,6 @@ function Notifications:Create(properties)
     local Cfg = {
         Name = properties.Name or "This is a title!";
         Lifetime = properties.LifeTime or 3;
-        
         Items = {};
         outline;
     }
@@ -4965,16 +4912,11 @@ function Notifications:Create(properties)
     
     local index = #Notifications.Notifs + 1
     Notifications.Notifs[index] = Items.Outline
-
-    
     local offset = Notifications:RefreshNotifications()
-
     Items.Outline.Position = dim_offset(20, offset)
-
     Library:Tween(Items.Outline, {AnchorPoint = vec2(0, 0)})
     Library:Tween(Items.AccentLine, {Size = dim2(0, -2, 0, 1)}, TweenInfo.new(Cfg.Lifetime, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut, 0, false, 0))
 
-    print(Items.AccentLine.BackgroundTransparency)
     task.spawn(function()
         task.wait(Cfg.Lifetime)
         Notifications.Notifs[index] = nil
