@@ -483,7 +483,7 @@ function library:initializeColorPicker(options)
         Position = dim2(0, 120, 0, 228),
         BorderColor3 = rgb(0, 0, 0),
         Size = dim2(0, 150, 0, 150),
-        BorderSizePixel = 0,
+        BorderSizePixel = 1,
         BackgroundColor3 = rgb(1, 1, 1),
         ZIndex = 999, 
     })
@@ -534,7 +534,7 @@ function library:initializeColorPicker(options)
             Position = dim2(0, 6, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(1, -62, 1, -5),
-            BorderSizePixel = 0,
+            BorderSizePixel = 1,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -622,7 +622,7 @@ function library:initializeColorPicker(options)
             Position = dim2(1, -32, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(0, 16, 1, -5),
-            BorderSizePixel = 0,
+            BorderSizePixel = 1,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -671,7 +671,7 @@ function library:initializeColorPicker(options)
             Position = dim2(1, -8, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(0, 16, 1, -5),
-            BorderSizePixel = 0,
+            BorderSizePixel = 1,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -1018,7 +1018,7 @@ function library:keyPicker(options)
         Position = dim2(0, 120, 0, 228),
         BorderColor3 = rgb(0, 0, 0),
         Size = dim2(0, 261, 0, 236),
-        BorderSizePixel = 0,
+        BorderSizePixel = 1,
         BackgroundColor3 = rgb(1, 1, 1),
         ZIndex = 999, 
     })
@@ -1069,7 +1069,7 @@ function library:keyPicker(options)
             Position = dim2(0, 6, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(1, -62, 1, -5),
-            BorderSizePixel = 0,
+            BorderSizePixel = 1,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -1157,7 +1157,7 @@ function library:keyPicker(options)
             Position = dim2(1, -32, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(0, 16, 1, -5),
-            BorderSizePixel = 0,
+            BorderSizePixel = 1,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -1206,7 +1206,7 @@ function library:keyPicker(options)
             Position = dim2(1, -8, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(0, 16, 1, -5),
-            BorderSizePixel = 0,
+            BorderSizePixel = 1,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -1423,7 +1423,7 @@ function library:window(properties)
         Position = dim2(0.5, 0, 0.5, 0),
         BorderColor3 = rgb(0, 0, 0),
         Size = cfg.size,
-        BorderSizePixel = 0,
+        BorderSizePixel = 1,
         BackgroundColor3 = rgb(18, 18, 18)
     });
 
@@ -1603,7 +1603,7 @@ function library:tab(properties)
             Text = "",
             AutoButtonColor = false,
             Size = dim2(1, 0, 0, 40),
-            BorderSizePixel = 0,
+            BorderSizePixel = 1,
             TextSize = 14,
             BackgroundColor3 = rgb(18, 18, 18)
         })
@@ -1720,7 +1720,7 @@ function library:section(properties)
             Name = "",
             BorderColor3 = rgb(0, 0, 0),
             Size = self.fill and dim2(1, 0, 0, 0) or cfg.size,
-            BorderSizePixel = 0,
+            BorderSizePixel = 1,
             BackgroundColor3 = rgb(18, 18, 18)
         })
 
@@ -1891,7 +1891,7 @@ end
                 Position = dim2(0, 0, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(0, 8, 0, 8),
-                BorderSizePixel = 0,
+                BorderSizePixel = 1,
                 BackgroundColor3 = rgb(2, 2, 2),
                 LayoutOrder = -1,
                 AutoButtonColor = false
@@ -2034,7 +2034,7 @@ end
                 Position = dim2(0, 0, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -27, 1, 8),
-                BorderSizePixel = 0,
+                BorderSizePixel = 1,
                 BackgroundColor3 = rgb(1, 1, 1)
             })
             
@@ -2267,7 +2267,7 @@ end
                 Position = dim2(0, 0, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -27, 1, 20),
-                BorderSizePixel = 0,
+                BorderSizePixel = 1,
                 BackgroundColor3 = rgb(1, 1, 1)
             })
             
@@ -2372,7 +2372,7 @@ end
                     Size = dim2(0, 161, 0, 0),
                     Position = dim2(0, 100, 0, 200),
                     BorderColor3 = rgb(0, 0, 0),
-                    BorderSizePixel = 0,
+                    BorderSizePixel = 1,
                     AutomaticSize = Enum.AutomaticSize.Y,
                     BackgroundColor3 = rgb(1, 1, 1),
                     Visible = false, 
@@ -2540,7 +2540,7 @@ end
                 Name = "",
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(0, 18, 0, 9),
-                BorderSizePixel = 0,
+                BorderSizePixel = 1,
                 BackgroundColor3 = rgb(2, 2, 2)
             })
             
@@ -2746,7 +2746,7 @@ end
                 Position = dim2(0, -1, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -27, 1, 20),
-                BorderSizePixel = 0,
+                BorderSizePixel = 1,
                 BackgroundColor3 = rgb(1, 1, 1)
             })
             
@@ -3073,7 +3073,7 @@ end
                 Position = dim2(0, 0, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -27, 0, cfg.scale),
-                BorderSizePixel = 0,
+                BorderSizePixel = 1,
                 BackgroundColor3 = rgb(1, 1, 1)
             })
             
@@ -3309,7 +3309,7 @@ end
                 Position = dim2(0, -1, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -27, 1, 20),
-                BorderSizePixel = 0,
+                BorderSizePixel = 1,
                 BackgroundColor3 = rgb(1, 1, 1)
             })
             
@@ -3411,7 +3411,7 @@ function notifications:create_notification(options)
             Parent = gethui();
             Size = dim2(0, 0, 0, 0);
             BorderColor3 = rgb(0, 0, 0);
-            BorderSizePixel = 0;
+            BorderSizePixel = 1;
             AutomaticSize = Enum.AutomaticSize.XY;
             BackgroundColor3 = rgb(46, 46, 46)
         });
