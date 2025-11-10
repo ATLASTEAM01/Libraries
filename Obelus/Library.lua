@@ -1412,6 +1412,7 @@
             Enabled = true,
             ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
             IgnoreGuiInset = true,
+            ResetOnSpawn = false
         })
 
         local outline = library:create("Frame", {
