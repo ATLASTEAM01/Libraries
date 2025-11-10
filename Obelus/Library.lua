@@ -3425,104 +3425,111 @@
                 callback = options.callback or function() end,
                 name = options.text or options.name or "Button",
             }
-
-                local button_holder = library:create("TextLabel", {
-                    Parent = self.background or self.elements or self.colorpickerElements,
-                    Name = "",
-                    FontFace = library.font,
-                    TextColor3 = rgb(180, 180, 180),
-                    BorderColor3 = rgb(0, 0, 0),
-                    Text = "",
-                    ZIndex = 2,
-                    Size = dim2(1, -8, 0, 12),
-                    BorderSizePixel = 0,
-                    BackgroundTransparency = 1,
-                    TextXAlignment = Enum.TextXAlignment.Left,
-                    AutomaticSize = Enum.AutomaticSize.Y,
-                    TextYAlignment = Enum.TextYAlignment.Top,
-                    TextSize = 11,
-                    BackgroundColor3 = rgb(255, 255, 255)
-                })
-                
-                local bottom_components = library:create("Frame", {
-                    Parent = button_holder,
-                    Name = "",
-                    Position = dim2(0, 14, 0, 0),
-                    BorderColor3 = rgb(0, 0, 0),
-                    Size = dim2(1, -6, 0, 0),
-                    BorderSizePixel = 0,
-                    BackgroundColor3 = rgb(255, 255, 255)
-                })
-                
-                local button = library:create("Frame", {
-                    Parent = bottom_components,
-                    Name = "",
-                    Position = dim2(0, -1, 0, 2),
-                    BorderColor3 = rgb(0, 0, 0),
-                    Size = dim2(1, -27, 1, 20),
-                    BorderSizePixel = 0,
-                    BackgroundColor3 = rgb(1, 1, 1)
-                })
-                
-                local inline = library:create("Frame", {
-                    Parent = button,
-                    Name = "",
-                    Position = dim2(0, 1, 0, 1),
-                    BorderColor3 = rgb(0, 0, 0),
-                    Size = dim2(1, -2, 1, -2),
-                    BorderSizePixel = 0,
-                    BackgroundColor3 = rgb(45, 45, 45)
-                })
-                
-                local background = library:create("Frame", {
-                    Parent = inline,
-                    Name = "",
-                    Position = dim2(0, 1, 0, 1),
-                    BorderColor3 = rgb(0, 0, 0),
-                    Size = dim2(1, -2, 1, -2),
-                    BorderSizePixel = 0,
-                    BackgroundColor3 = rgb(19, 19, 19)
-                })
-                
-                local button = library:create("TextButton", {
-                    Parent = background,
-                    Name = "",
-                    FontFace = library.font,
-                    TextTruncate = Enum.TextTruncate.AtEnd,
-                    TextSize = 12,
-                    Size = dim2(1, -6, 1, 0),
-                    RichText = true,
-                    TextColor3 = rgb(178, 178, 178),
-                    BorderColor3 = rgb(0, 0, 0),
-                    Text = cfg.name,
-                    BackgroundTransparency = 1,
-                    TextXAlignment = Enum.TextXAlignment.Center,
-                    Position = dim2(0, 6, 0, 0),
-                    BorderSizePixel = 0,
-                    BackgroundColor3 = rgb(255, 255, 255)
-                })
-
-                button.MouseButton1Click:Connect(function()
-                    cfg.callback()
-                end)
-                
-                library:create("UIListLayout", {
-                    Parent = bottom_components,
-                    Name = "",
-                    SortOrder = Enum.SortOrder.LayoutOrder
-                })
-                
-                local UIStroke = library:create("UIStroke", {
-                    Parent = button_holder,
-                    Name = ""
-                })
-                
-                local UIPadding = library:create("UIPadding", {
-                    Parent = button_holder,
-                    Name = "",
-                    PaddingLeft = dim(0, 1)
-                })
-                
+        
+            local button_holder = library:create("TextLabel", {
+                Parent = self.background or self.elements or self.colorpickerElements,
+                Name = "",
+                FontFace = library.font,
+                TextColor3 = rgb(180, 180, 180),
+                BorderColor3 = rgb(0, 0, 0),
+                Text = "",
+                ZIndex = 2,
+                Size = dim2(1, -8, 0, 12),
+                BorderSizePixel = 0,
+                BackgroundTransparency = 1,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                AutomaticSize = Enum.AutomaticSize.Y,
+                TextYAlignment = Enum.TextYAlignment.Top,
+                TextSize = 11,
+                BackgroundColor3 = rgb(255, 255, 255)
+            })
+        
+            local bottom_components = library:create("Frame", {
+                Parent = button_holder,
+                Name = "",
+                Position = dim2(0, 14, 0, 0),
+                BorderColor3 = rgb(0, 0, 0),
+                Size = dim2(1, -6, 0, 0),
+                BorderSizePixel = 0,
+                BackgroundColor3 = rgb(255, 255, 255)
+            })
+        
+            local button_visual_frame = library:create("Frame", {
+                Parent = bottom_components,
+                Name = "",
+                Position = dim2(0, -1, 0, 2),
+                BorderColor3 = rgb(0, 0, 0),
+                Size = dim2(1, -27, 1, 20),
+                BorderSizePixel = 0,
+                BackgroundColor3 = rgb(1, 1, 1)
+            })
+        
+            local inline = library:create("Frame", {
+                Parent = button_visual_frame,
+                Name = "",
+                Position = dim2(0, 1, 0, 1),
+                BorderColor3 = rgb(0, 0, 0),
+                Size = dim2(1, -2, 1, -2),
+                BorderSizePixel = 0,
+                BackgroundColor3 = rgb(45, 45, 45)
+            })
+        
+            local background = library:create("Frame", {
+                Parent = inline,
+                Name = "",
+                Position = dim2(0, 1, 0, 1),
+                BorderColor3 = rgb(0, 0, 0),
+                Size = dim2(1, -2, 1, -2),
+                BorderSizePixel = 0,
+                BackgroundColor3 = rgb(19, 19, 19)
+            })
+        
+            local text_label = library:create("TextLabel", {
+                Parent = background,
+                Name = "",
+                FontFace = library.font,
+                TextTruncate = Enum.TextTruncate.AtEnd,
+                TextSize = 12,
+                Size = dim2(1, 0, 1, 0),
+                RichText = true,
+                TextColor3 = rgb(178, 178, 178),
+                BorderColor3 = rgb(0, 0, 0),
+                Text = cfg.name,
+                BackgroundTransparency = 1,
+                TextXAlignment = Enum.TextXAlignment.Center,
+                BorderSizePixel = 0,
+                BackgroundColor3 = rgb(255, 255, 255)
+            })
+        
+            local clickable_button = library:create("TextButton", {
+                Parent = button_visual_frame,
+                Name = "ClickDetector",
+                Text = "",
+                Size = dim2(1, 0, 1, 0),
+                BackgroundTransparency = 1,
+                ZIndex = background.ZIndex + 1
+            })
+        
+            clickable_button.MouseButton1Click:Connect(function()
+                cfg.callback()
+            end)
+        
+            library:create("UIListLayout", {
+                Parent = bottom_components,
+                Name = "",
+                SortOrder = Enum.SortOrder.LayoutOrder
+            })
+        
+            library:create("UIStroke", {
+                Parent = button_holder,
+                Name = ""
+            })
+        
+            library:create("UIPadding", {
+                Parent = button_holder,
+                Name = "",
+                PaddingLeft = dim(0, 1)
+            })
         end
         
     local notifications = library.notifications
