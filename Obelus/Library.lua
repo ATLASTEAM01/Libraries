@@ -1475,13 +1475,15 @@
                 Color = rgbseq{rgbkey(0, rgb(255, 255, 255)), rgbkey(1, rgb(109, 109, 109))}
             })
             
+            local TAB_WIDTH = 50
+            
             cfg["tab_holder"] = library:create("Frame", {
                 Parent = background,
                 Name = "",
                 BackgroundTransparency = 1,
                 Position = dim2(0, 0, 0, 29),
                 BorderColor3 = rgb(0, 0, 0),
-                Size = dim2(0, 50, 1, -29),
+                Size = dim2(0, TAB_WIDTH, 1, -29), 
                 BorderSizePixel = 0,
                 BackgroundColor3 = rgb(255, 255, 255)
             })
@@ -1498,17 +1500,17 @@
             library:create("UIPadding", {
                 Parent = background,
                 Name = "",
-                PaddingBottom = dim(0, 11),
-                PaddingRight = dim(0, 9),
-                PaddingLeft = dim(0, 9)
+                PaddingBottom = dim(0, 1), 
+                PaddingRight = dim(0, 1), 
+                PaddingLeft = dim(0, 1) 
             })
             
             local page_container = library:create("Frame", {
                 Parent = background,
                 Name = "",
-                Position = dim2(0, 50, 0, 29),
+                Position = dim2(0, TAB_WIDTH, 0, 29), 
                 BorderColor3 = rgb(0, 0, 0),
-                Size = dim2(1, -50, 1, -29),
+                Size = dim2(1, -TAB_WIDTH, 1, -29), 
                 BorderSizePixel = 0,
                 BackgroundColor3 = rgb(0,0,0),
                 BackgroundTransparency = 1
@@ -1635,7 +1637,7 @@
                 BorderColor3 = rgb(0, 0, 0),
                 Text = "",
                 AutoButtonColor = false,
-                Size = dim2(0, 40, 0, 40),
+                Size = dim2(1, 0, 0, 40),
                 BorderSizePixel = 0,
                 TextSize = 14,
                 BackgroundColor3 = rgb(0, 0, 0)
@@ -1679,8 +1681,9 @@
                 BorderColor3 = rgb(0, 0, 0),
                 Text = cfg.name,
                 BackgroundTransparency = 1,
-                Position = dim2(0, 0, 0, -1),
+                Position = dim2(0.5, 0, 0.5, 0),
                 Size = dim2(1, 0, 1, 0),
+                AnchorPoint = vec2(0.5, 0.5),
                 BorderSizePixel = 0,
                 TextSize = 12,
                 BackgroundColor3 = rgb(255, 255, 255)
