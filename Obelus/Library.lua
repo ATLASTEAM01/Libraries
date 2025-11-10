@@ -1,3 +1,4 @@
+-- Variables
 local uis = game:GetService("UserInputService") 
 local players = game:GetService("Players") 
 local ws = game:GetService("Workspace")
@@ -483,7 +484,7 @@ function library:initializeColorPicker(options)
         Position = dim2(0, 120, 0, 228),
         BorderColor3 = rgb(0, 0, 0),
         Size = dim2(0, 150, 0, 150),
-        BorderSizePixel = 1,
+        BorderSizePixel = 0,
         BackgroundColor3 = rgb(1, 1, 1),
         ZIndex = 999, 
     })
@@ -534,7 +535,7 @@ function library:initializeColorPicker(options)
             Position = dim2(0, 6, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(1, -62, 1, -5),
-            BorderSizePixel = 1,
+            BorderSizePixel = 0,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -622,7 +623,7 @@ function library:initializeColorPicker(options)
             Position = dim2(1, -32, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(0, 16, 1, -5),
-            BorderSizePixel = 1,
+            BorderSizePixel = 0,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -671,7 +672,7 @@ function library:initializeColorPicker(options)
             Position = dim2(1, -8, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(0, 16, 1, -5),
-            BorderSizePixel = 1,
+            BorderSizePixel = 0,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -1018,7 +1019,7 @@ function library:keyPicker(options)
         Position = dim2(0, 120, 0, 228),
         BorderColor3 = rgb(0, 0, 0),
         Size = dim2(0, 261, 0, 236),
-        BorderSizePixel = 1,
+        BorderSizePixel = 0,
         BackgroundColor3 = rgb(1, 1, 1),
         ZIndex = 999, 
     })
@@ -1069,7 +1070,7 @@ function library:keyPicker(options)
             Position = dim2(0, 6, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(1, -62, 1, -5),
-            BorderSizePixel = 1,
+            BorderSizePixel = 0,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -1157,7 +1158,7 @@ function library:keyPicker(options)
             Position = dim2(1, -32, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(0, 16, 1, -5),
-            BorderSizePixel = 1,
+            BorderSizePixel = 0,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -1206,7 +1207,7 @@ function library:keyPicker(options)
             Position = dim2(1, -8, 0, 6),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(0, 16, 1, -5),
-            BorderSizePixel = 1,
+            BorderSizePixel = 0,
             BackgroundColor3 = rgb(1, 1, 1)
         })
         
@@ -1416,18 +1417,38 @@ function library:window(properties)
         IgnoreGuiInset = true,
     })
 
-    local background = library:create("Frame", {
+    local outline = library:create("Frame", {
         Parent = library.gui,
         Name = "",
         AnchorPoint = vec2(0.5, 0.5),
         Position = dim2(0.5, 0, 0.5, 0),
         BorderColor3 = rgb(0, 0, 0),
         Size = cfg.size,
-        BorderSizePixel = 1,
-        BackgroundColor3 = rgb(18, 18, 18)
+        BorderSizePixel = 0,
+        BackgroundColor3 = rgb(0, 0, 0)
     });
 
-    library:draggify(background)
+    library:draggify(outline)
+        
+        local inline = library:create("Frame", {
+            Parent = outline,
+            Name = "",
+            Position = dim2(0, 1, 0, 1),
+            BorderColor3 = rgb(0, 0, 0),
+            Size = dim2(1, -2, 1, -2),
+            BorderSizePixel = 0,
+            BackgroundColor3 = rgb(48, 48, 48)
+        })
+        
+        local background = library:create("Frame", {
+            Parent = inline,
+            Name = "",
+            Position = dim2(0, 1, 0, 1),
+            BorderColor3 = rgb(0, 0, 0),
+            Size = dim2(1, -2, 1, -2),
+            BorderSizePixel = 0,
+            BackgroundColor3 = rgb(12, 12, 12)
+        })
         
         local title_holder = library:create("Frame", {
             Parent = background,
@@ -1455,6 +1476,23 @@ function library:window(properties)
             BackgroundColor3 = rgb(255, 255, 255)
         })
         
+        local accent_line = library:create("Frame", {
+            Parent = title_holder,
+            Name = "",
+            Position = dim2(0, 0, 1, -6),
+            BorderColor3 = rgb(0, 0, 0),
+            Size = dim2(1, 0, 0, 2),
+            BorderSizePixel = 0,
+            BackgroundColor3 = themes.preset.accent
+        }); library:applyTheme(accent_line, "accent", "BackgroundColor3")
+        
+        library:create("UIGradient", {
+            Parent = accent_line,
+            Name = "",
+            Rotation = 90,
+            Color = rgbseq{rgbkey(0, rgb(255, 255, 255)), rgbkey(1, rgb(109, 109, 109))}
+        })
+        
         local UIPadding = library:create("UIPadding", {
             Parent = title_holder,
             PaddingLeft = dim(0, 8)
@@ -1478,16 +1516,16 @@ function library:window(properties)
             Name = "",
             FillDirection = Enum.FillDirection.Vertical,
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
-            Padding = dim(0, 0),
+            Padding = dim(0, 10),
             SortOrder = Enum.SortOrder.LayoutOrder
         })
         
         library:create("UIPadding", {
             Parent = background,
             Name = "",
-            PaddingBottom = dim(0, 0), 
-            PaddingRight = dim(0, 0), 
-            PaddingLeft = dim(0, 0) 
+            PaddingBottom = dim(0, 1), 
+            PaddingRight = dim(0, 1), 
+            PaddingLeft = dim(0, 1) 
         })
         
         local page_container = library:create("Frame", {
@@ -1501,12 +1539,32 @@ function library:window(properties)
             BackgroundTransparency = 1
         })
 
-        cfg["page_holder"] = library:create("Frame", {
+        local page_holder_outline = library:create("Frame", {
             Parent = page_container,
             Name = "",
             Position = dim2(0, 0, 0, 0),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(1, 0, 1, 0),
+            BorderSizePixel = 0,
+            BackgroundColor3 = rgb(0, 0, 0)
+        })
+        
+        local page_holder_inline = library:create("Frame", {
+            Parent = page_holder_outline,
+            Name = "",
+            Position = dim2(0, 1, 0, 1),
+            BorderColor3 = rgb(0, 0, 0),
+            Size = dim2(1, -2, 1, -2),
+            BorderSizePixel = 0,
+            BackgroundColor3 = rgb(51, 51, 51)
+        })
+        
+        cfg["page_holder"] = library:create("Frame", {
+            Parent = page_holder_inline,
+            Name = "",
+            Position = dim2(0, 1, 0, 1),
+            BorderColor3 = rgb(0, 0, 0),
+            Size = dim2(1, -2, 1, -2),
             BorderSizePixel = 0,
             BackgroundColor3 = rgb(13, 13, 13)
         }) 
@@ -1594,7 +1652,7 @@ function library:tab(properties)
         name = properties.name or "visuals", 
     } 
 
-        local button_holder = library:create("TextButton", {
+        local outline = library:create("TextButton", {
             Parent = self.tab_holder,
             Name = "",
             FontFace = library.font,
@@ -1603,13 +1661,43 @@ function library:tab(properties)
             Text = "",
             AutoButtonColor = false,
             Size = dim2(1, 0, 0, 40),
-            BorderSizePixel = 1,
+            BorderSizePixel = 0,
             TextSize = 14,
-            BackgroundColor3 = rgb(18, 18, 18)
+            BackgroundColor3 = rgb(0, 0, 0)
+        })
+        
+        local inline = library:create("Frame", {
+            Parent = outline,
+            Name = "",
+            Position = dim2(0, 1, 0, 1),
+            BorderColor3 = rgb(0, 0, 0),
+            Size = dim2(1, -2, 1, -2),
+            BorderSizePixel = 0,
+            BackgroundColor3 = rgb(41, 41, 41)
+        })
+        
+        local background = library:create("Frame", {
+            Parent = inline,
+            Name = "",
+            Position = dim2(0, 1, 0, 1),
+            BorderColor3 = rgb(0, 0, 0),
+            Size = dim2(1, -2, 1, -2),
+            BorderSizePixel = 0,
+            BackgroundColor3 = rgb(255, 255, 255)
+        })
+        
+        local gradient = library:create("UIGradient", {
+            Parent = background,
+            Name = "",
+            Rotation = 90,
+            Color = rgbseq{
+                rgbkey(0, rgb(41, 41, 41)), 
+                rgbkey(1, rgb(16, 16, 16))
+            }
         })
         
         local text = library:create("TextLabel", {
-            Parent = button_holder,
+            Parent = background,
             Name = "",
             FontFace = library.font,
             TextColor3 = rgb(140, 140, 140),
@@ -1628,9 +1716,9 @@ function library:tab(properties)
             Parent = self.page_holder,
             Name = "",
             Visible = false, 
-            Position = dim2(0, 0, 0, 0),
+            Position = dim2(0, 1, 0, 1),
             BorderColor3 = rgb(0, 0, 0),
-            Size = dim2(1, 0, 1, 0),
+            Size = dim2(1, -2, 1, -2),
             BorderSizePixel = 0,
             BackgroundColor3 = rgb(13, 13, 13)
         })
@@ -1640,7 +1728,7 @@ function library:tab(properties)
             Name = "",
             FillDirection = Enum.FillDirection.Horizontal,
             HorizontalFlex = Enum.UIFlexAlignment.Fill,
-            Padding = dim(0, 8),
+            Padding = dim(0, 11),
             SortOrder = Enum.SortOrder.LayoutOrder,
             VerticalFlex = Enum.UIFlexAlignment.Fill
         })
@@ -1648,10 +1736,10 @@ function library:tab(properties)
         library:create("UIPadding", {
             Parent = cfg["page"],
             Name = "",
-            PaddingTop = dim(0, 8),
-            PaddingBottom = dim(0, 8),
-            PaddingRight = dim(0, 8),
-            PaddingLeft = dim(0, 8)
+            PaddingTop = dim(0, 11),
+            PaddingBottom = dim(0, 11),
+            PaddingRight = dim(0, 11),
+            PaddingLeft = dim(0, 11)
         })
 
     function cfg.open_tab() 
@@ -1660,19 +1748,24 @@ function library:tab(properties)
         if self.selected_tab then 
             self.selected_tab[1].TextColor3 = rgb(160,160,160)
             self.selected_tab[2].Visible = false 
-            self.selected_tab[3].BackgroundColor3 = rgb(18, 18, 18)
+            self.selected_tab[3].Color = rgbseq{
+                rgbkey(0, rgb(41, 41, 41)),
+                rgbkey(1, rgb(16, 16, 16))
+            }
 
             self.selected_tab = nil 
         end 
 
         text.TextColor3 = themes.preset.accent
         cfg["page"].Visible = true 
-        button_holder.BackgroundColor3 = rgb(30, 30, 30)
-
-        self.selected_tab = {text, cfg["page"], button_holder}
+        gradient.Color = rgbseq{
+            rgbkey(0, themes.preset.accent:Lerp(rgb(0,0,0), 0.2)),
+            rgbkey(1, themes.preset.accent:Lerp(rgb(0,0,0), 0.6))
+        }
+        self.selected_tab = {text, cfg["page"], gradient}
     end 
 
-    button_holder.MouseButton1Down:Connect(function()
+    outline.MouseButton1Down:Connect(function()
         cfg.open_tab()
     end)
 
@@ -1701,7 +1794,7 @@ function library:column(properties)
     library:create("UIListLayout", {
         Parent = cfg["column"],
         Name = "",
-        Padding = dim(0, 8),
+        Padding = dim(0, 12),
         SortOrder = Enum.SortOrder.LayoutOrder, 
         VerticalFlex = cfg.fill and Enum.UIFlexAlignment.Fill or Enum.UIFlexAlignment.None
     })
@@ -1715,13 +1808,33 @@ function library:section(properties)
         size = properties.size or properties.Size or dim2(1, 0, 1, -12)
     }   
 
-        local background = library:create("Frame", {
+        local outline = library:create("Frame", {
             Parent = self.column,
             Name = "",
             BorderColor3 = rgb(0, 0, 0),
             Size = self.fill and dim2(1, 0, 0, 0) or cfg.size,
-            BorderSizePixel = 1,
-            BackgroundColor3 = rgb(18, 18, 18)
+            BorderSizePixel = 0,
+            BackgroundColor3 = rgb(12, 12, 12)
+        })
+        
+        local inline = library:create("Frame", {
+            Parent = outline,
+            Name = "",
+            Position = dim2(0, 1, 0, 1),
+            BorderColor3 = rgb(0, 0, 0),
+            Size = dim2(1, -2, 1, -2),
+            BorderSizePixel = 0,
+            BackgroundColor3 = rgb(45, 45, 45)
+        })
+        
+        local background = library:create("Frame", {
+            Parent = inline,
+            Name = "",
+            Position = dim2(0, 1, 0, 1),
+            BorderColor3 = rgb(0, 0, 0),
+            Size = dim2(1, -2, 1, -2),
+            BorderSizePixel = 0,
+            BackgroundColor3 = rgb(19, 19, 19)
         })
 
         local scrollbar_fill = library:create("Frame", {
@@ -1734,6 +1847,24 @@ function library:section(properties)
             ZIndex = 4,
             BorderSizePixel = 0,
             BackgroundColor3 = rgb(45, 45, 45)
+        })
+        
+        local shadow = library:create("Frame", {
+            Parent = background,
+            Name = "",
+            Size = dim2(1, -5, 0, 21),
+            Position = dim2(0, 0, 1, -21),
+            BorderColor3 = rgb(0, 0, 0),
+            ZIndex = 999,
+            BorderSizePixel = 0,
+            BackgroundColor3 = rgb(19, 19, 19)
+        })
+        
+        library:create("UIGradient", {
+            Parent = shadow,
+            Name = "",
+            Rotation = -90,
+            Transparency = numseq{numkey(0, 0), numkey(1, 1)}
         })
         
         local elements_scroll = library:create("ScrollingFrame", {
@@ -1782,7 +1913,7 @@ function library:section(properties)
         })
         
         local section_title = library:create("TextLabel", {
-            Parent = background,
+            Parent = outline,
             Name = "",
             FontFace = library.font,
             TextColor3 = rgb(205, 205, 205),
@@ -1790,12 +1921,23 @@ function library:section(properties)
             Text = cfg.name,
             AutomaticSize = Enum.AutomaticSize.XY,
             AnchorPoint = vec2(0, 0.5),
-            Position = dim2(0, 8, 0, 0),
+            Position = dim2(0, 14, 0, 3),
             BackgroundTransparency = 1,
             TextXAlignment = Enum.TextXAlignment.Left,
             BorderSizePixel = 0,
             ZIndex = 2,
             TextSize = 12,
+            BackgroundColor3 = rgb(19, 19, 19)
+        })
+
+        local section_filler = library:create("Frame", {
+            Parent = outline,
+            Name = "",
+            AnchorPoint = vec2(0, 0.5),
+            Position = dim2(0, 13, 0, 1),
+            BorderColor3 = rgb(0, 0, 0),
+            Size = dim2(0, section_title.TextBounds.X, 0, 3),
+            BorderSizePixel = 0,
             BackgroundColor3 = rgb(19, 19, 19)
         })
 
@@ -1891,7 +2033,7 @@ end
                 Position = dim2(0, 0, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(0, 8, 0, 8),
-                BorderSizePixel = 1,
+                BorderSizePixel = 0,
                 BackgroundColor3 = rgb(2, 2, 2),
                 LayoutOrder = -1,
                 AutoButtonColor = false
@@ -1907,6 +2049,13 @@ end
                 BackgroundColor3 = rgb(63, 63, 63)
             })
             
+            library:create("UIGradient", {
+                Parent = inline,
+                Name = "",
+                Rotation = 90,
+                Color = rgbseq{rgbkey(0, rgb(232, 232, 232)), rgbkey(1, rgb(162, 162, 162))}
+            })
+            
             local accent = library:create("Frame", {
                 Parent = inline,
                 Name = "",
@@ -1916,6 +2065,13 @@ end
                 BorderSizePixel = 0,
                 BackgroundColor3 = themes.preset.accent
             }); library:applyTheme(accent, "accent", "BackgroundColor3")
+
+            library:create("UIGradient", {
+                Parent = accent,
+                Name = "",
+                Rotation = 90,
+                Color = rgbseq{rgbkey(0, rgb(255, 255, 255)), rgbkey(1, rgb(109, 109, 109))}
+            })
             
             local text = library:create("TextButton", {
                 Parent = left_components,
@@ -2034,7 +2190,7 @@ end
                 Position = dim2(0, 0, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -27, 1, 8),
-                BorderSizePixel = 1,
+                BorderSizePixel = 0,
                 BackgroundColor3 = rgb(1, 1, 1)
             })
             
@@ -2057,6 +2213,13 @@ end
                 BackgroundColor3 = themes.preset.accent
             }); library:applyTheme(fill, "accent", "BackgroundColor3")
             
+            library:create("UIGradient", {
+                Parent = fill,
+                Name = "",
+                Rotation = 90,
+                Color = rgbseq{rgbkey(0, rgb(232, 232, 232)), rgbkey(1, rgb(162, 162, 162))}
+            })
+
             local text_slider = library:create("TextLabel", {
                 Parent = fill,
                 Name = "",
@@ -2267,7 +2430,7 @@ end
                 Position = dim2(0, 0, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -27, 1, 20),
-                BorderSizePixel = 1,
+                BorderSizePixel = 0,
                 BackgroundColor3 = rgb(1, 1, 1)
             })
             
@@ -2372,7 +2535,7 @@ end
                     Size = dim2(0, 161, 0, 0),
                     Position = dim2(0, 100, 0, 200),
                     BorderColor3 = rgb(0, 0, 0),
-                    BorderSizePixel = 1,
+                    BorderSizePixel = 0,
                     AutomaticSize = Enum.AutomaticSize.Y,
                     BackgroundColor3 = rgb(1, 1, 1),
                     Visible = false, 
@@ -2540,7 +2703,7 @@ end
                 Name = "",
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(0, 18, 0, 9),
-                BorderSizePixel = 1,
+                BorderSizePixel = 0,
                 BackgroundColor3 = rgb(2, 2, 2)
             })
             
@@ -2746,7 +2909,7 @@ end
                 Position = dim2(0, -1, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -27, 1, 20),
-                BorderSizePixel = 1,
+                BorderSizePixel = 0,
                 BackgroundColor3 = rgb(1, 1, 1)
             })
             
@@ -3073,7 +3236,7 @@ end
                 Position = dim2(0, 0, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -27, 0, cfg.scale),
-                BorderSizePixel = 1,
+                BorderSizePixel = 0,
                 BackgroundColor3 = rgb(1, 1, 1)
             })
             
@@ -3309,7 +3472,7 @@ end
                 Position = dim2(0, -1, 0, 2),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -27, 1, 20),
-                BorderSizePixel = 1,
+                BorderSizePixel = 0,
                 BackgroundColor3 = rgb(1, 1, 1)
             })
             
@@ -3411,7 +3574,7 @@ function notifications:create_notification(options)
             Parent = gethui();
             Size = dim2(0, 0, 0, 0);
             BorderColor3 = rgb(0, 0, 0);
-            BorderSizePixel = 1;
+            BorderSizePixel = 0;
             AutomaticSize = Enum.AutomaticSize.XY;
             BackgroundColor3 = rgb(46, 46, 46)
         });
