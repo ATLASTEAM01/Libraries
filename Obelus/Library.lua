@@ -268,8 +268,8 @@
 
     function library:draggify(frame)
         local dragging = false
-        local start_pos
         local drag_start
+        local start_pos
 
         frame.InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -289,20 +289,25 @@
             if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                 local viewport_size = camera.ViewportSize
                 local new_pos = start_pos + UDim2.fromOffset(input.Position.X - drag_start.X, input.Position.Y - drag_start.Y)
-                
+
                 local anchor_point = frame.AnchorPoint
                 local size = frame.AbsoluteSize
-                
-                local min_x = 0 + (size.X * anchor_point.X)
-                local max_x = viewport_size.X - (size.X * (1 - anchor_point.X))
-                local min_y = 0 + (size.Y * anchor_point.Y)
-                local max_y = viewport_size.Y - (size.Y * (1 - anchor_point.Y))
-                
+
+                local min_abs_x = size.X * anchor_point.X
+                local max_abs_x = viewport_size.X - (size.X * (1 - anchor_point.X))
+                local min_abs_y = size.Y * anchor_point.Y
+                local max_abs_y = viewport_size.Y - (size.Y * (1 - anchor_point.Y))
+
+                local min_offset_x = min_abs_x - (viewport_size.X * new_pos.X.Scale)
+                local max_offset_x = max_abs_x - (viewport_size.X * new_pos.X.Scale)
+                local min_offset_y = min_abs_y - (viewport_size.Y * new_pos.Y.Scale)
+                local max_offset_y = max_abs_y - (viewport_size.Y * new_pos.Y.Scale)
+
                 frame.Position = UDim2.new(
                     new_pos.X.Scale,
-                    clamp(new_pos.X.Offset, min_x, max_x),
+                    clamp(new_pos.X.Offset, min_offset_x, max_offset_x),
                     new_pos.Y.Scale,
-                    clamp(new_pos.Y.Offset, min_y, max_y)
+                    clamp(new_pos.Y.Offset, min_offset_y, max_offset_y)
                 )
             end
         end)
