@@ -1,6 +1,5 @@
--- Variables 
-    local uis = game:GetService("UserInputService") 
-    local players = game:GetService("Players") 
+    local uis = game:GetService("UserInputService")
+    local players = game:GetService("Players")
     local ws = game:GetService("Workspace")
     local rs = game:GetService("ReplicatedStorage")
     local http_service = game:GetService("HttpService")
@@ -16,7 +15,7 @@
     local vec2 = Vector2.new
     local vec3 = Vector3.new
     local dim2 = UDim2.new
-    local dim = UDim.new 
+    local dim = UDim.new
     local rect = Rect.new
     local cfr = CFrame.new
     local empty_cfr = cfr()
@@ -34,32 +33,32 @@
     local numkey = NumberSequenceKeypoint.new
 
     local camera = ws.CurrentCamera
-    local lp = players.LocalPlayer 
-    local mouse = lp:GetMouse() 
+    local lp = players.LocalPlayer
+    local mouse = lp:GetMouse()
     local gui_offset = gui_service:GetGuiInset().Y
 
-    local max = math.max 
-    local floor = math.floor 
-    local min = math.min 
-    local abs = math.abs 
+    local max = math.max
+    local floor = math.floor
+    local min = math.min
+    local abs = math.abs
     local noise = math.noise
-    local rad = math.rad 
-    local random = math.random 
-    local pow = math.pow 
-    local sin = math.sin 
-    local pi = math.pi 
-    local tan = math.tan 
-    local atan2 = math.atan2 
-    local clamp = math.clamp 
+    local rad = math.rad
+    local random = math.random
+    local pow = math.pow
+    local sin = math.sin
+    local pi = math.pi
+    local tan = math.tan
+    local atan2 = math.atan2
+    local clamp = math.clamp
 
-    local insert = table.insert 
-    local find = table.find 
+    local insert = table.insert
+    local find = table.find
     local remove = table.remove
     local concat = table.concat
 
-    if getgenv().library then 
+    if getgenv().library then
         library:unloadMenu()
-    end 
+    end
 
     getgenv().library = {
         directory = "obels",
@@ -70,29 +69,29 @@
         flags = {},
         config_flags = {},
 
-        connections = {},   
+        connections = {},
         notifications = {notifs = {}, offset = 0},
         playerlist_data = {
             players = {},
-            player = {}, 
+            player = {},
         },
-        colorpicker_open = false; 
-        gui; 
+        colorpicker_open = false;
+        gui;
     }
 
     local themes = {
         preset = {
             ["accent"] = hex("#32CD99"),
-        }, 	
+        },
 
         utility = {
             ["accent"] = {
-                ["BackgroundColor3"] = {}, 	
-                ["TextColor3"] = {}, 
-                ["ImageColor3"] = {}, 
-                ["ScrollBarImageColor3"] = {} 
+                ["BackgroundColor3"] = {},
+                ["TextColor3"] = {},
+                ["ImageColor3"] = {},
+                ["ScrollBarImageColor3"] = {}
             },
-        }, 
+        },
     }
 
     local keys = {
@@ -152,18 +151,18 @@
     
     library.__index = library
 
-    for _, path in next, library.folders do 
+    for _, path in next, library.folders do
         makefolder(library.directory .. path)
     end
 
-    local flags = library.flags 
+    local flags = library.flags
     local config_flags = library.config_flags
 
     if not LPH_OBFUSCATED then
         getfenv().LPH_NO_VIRTUALIZE = function(...) return (...) end
     end
 
-        if not isfile(library.directory .. "/fonts/main.ttf") then 
+        if not isfile(library.directory .. "/fonts/main.ttf") then
             writefile(library.directory .. "/fonts/main.ttf", game:HttpGet("https://github.com/i77lhm/storage/raw/refs/heads/main/fonts/fs-tahoma-8px.ttf"))
         end
         
@@ -179,28 +178,28 @@
             }
         }
         
-        if not isfile(library.directory .. "/fonts/main_encoded.ttf") then 
+        if not isfile(library.directory .. "/fonts/main_encoded.ttf") then
             writefile(library.directory .. "/fonts/main_encoded.ttf", http_service:JSONEncode(tahoma))
-        end 
+        end
         
         library.font = Font.new(getcustomasset(library.directory .. "/fonts/main_encoded.ttf"), Enum.FontWeight.Regular)
 
-    function library:tween(obj, properties) 
+    function library:tween(obj, properties)
         local tween = tween_service:Create(obj, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, 0, false, 0), properties):Play()
             
         return tween
-    end 
+    end
 
-    function library:closeCurrentElement(cfg) 
-        local path = library.current_element_open 
+    function library:closeCurrentElement(cfg)
+        local path = library.current_element_open
 
-        if path and path ~= cfg then 
+        if path and path ~= cfg then
             path.setVisible(false)
-            path.open = false 
+            path.open = false
         end
-    end 
+    end
 
-    function library:makeResizable(frame) 
+    function library:makeResizable(frame)
         local Frame = Instance.new("TextButton")
         Frame.Position = dim2(1, -10, 1, -10)
         Frame.BorderColor3 = rgb(0, 0, 0)
@@ -208,16 +207,16 @@
         Frame.BorderSizePixel = 0
         Frame.BackgroundColor3 = rgb(255, 255, 255)
         Frame.Parent = frame
-        Frame.BackgroundTransparency = 1 
+        Frame.BackgroundTransparency = 1
         Frame.Text = ""
 
-        local resizing = false 
-        local start_size 
-        local start 
-        local og_size = frame.Size  
+        local resizing = false
+        local start_size
+        local start
+        local og_size = frame.Size
 
         Frame.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 resizing = true
                 start = input.Position
                 start_size = frame.Size
@@ -225,13 +224,13 @@
         end)
 
         Frame.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 resizing = false
             end
         end)
 
-        library:connection(uis.InputChanged, function(input, game_event) 
-            if resizing and input.UserInputType == Enum.UserInputType.MouseMovement then
+        library:connection(uis.InputChanged, function(input, game_event)
+            if resizing and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                 local viewport_x = camera.ViewportSize.X
                 local viewport_y = camera.ViewportSize.Y
 
@@ -268,12 +267,12 @@
     end)
 
     function library:draggify(frame)
-        local dragging = false 
+        local dragging = false
         local start_pos
-        local drag_start 
+        local drag_start
 
         frame.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = true
                 drag_start = input.Position
                 start_pos = frame.Position
@@ -281,13 +280,13 @@
         end)
 
         frame.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = false
             end
         end)
 
-        library:connection(uis.InputChanged, function(input, game_event) 
-            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        library:connection(uis.InputChanged, function(input, game_event)
+            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                 local viewport_size = camera.ViewportSize
                 local new_pos = start_pos + UDim2.fromOffset(input.Position.X - drag_start.X, input.Position.Y - drag_start.Y)
                 
@@ -307,7 +306,7 @@
                 )
             end
         end)
-    end 
+    end
 
     function library:convertEnum(enum)
         local enum_parts = {}
@@ -327,8 +326,8 @@
     end
 
     local config_holder;
-    function library:configListUpdate() 
-        if not config_holder then return end 
+    function library:configListUpdate()
+        if not config_holder then return end
     
         local list = {}
     
@@ -338,7 +337,7 @@
         end
         
         config_holder.refresh_options(list)
-    end 
+    end
 
     function library:getConfig()
         local Config = {}
@@ -351,117 +350,117 @@
             else
                 Config[_] = v
             end
-        end 
+        end
         
         return http_service:JSONEncode(Config)
     end
 
-    function library:loadConfig(config_json) 
+    function library:loadConfig(config_json)
         local config = http_service:JSONDecode(config_json)
     
-        for _, v in next, config do 
+        for _, v in next, config do
             local function_set = library.config_flags[_]
             
-            if function_set then 
+            if function_set then
                 if type(v) == "table" and not v["active"] then
                     function_set(hex(v["Color"]), v["Transparency"])
-                elseif type(v) == "table" and v["active"] then 
+                elseif type(v) == "table" and v["active"] then
                     function_set(v)
-                else 
+                else
                     function_set(v)
                 end
-            end 
-        end 
-    end 
+            end
+        end
+    end
     
-    function library:round(number, float) 
+    function library:round(number, float)
         local multiplier = 1 / (float or 1)
 
         return floor(number * multiplier + 0.5) / multiplier
-    end 
+    end
 
-    function library:applyTheme(instance, theme, property) 
+    function library:applyTheme(instance, theme, property)
         insert(themes.utility[theme][property], instance)
     end
 
     function library:updateTheme(theme, color)
-        for _, property in next, themes.utility[theme] do 
+        for _, property in next, themes.utility[theme] do
 
-            for m, object in next, property do 
-                if object[_] == themes.preset[theme] or object.ClassName == "UIGradient" then 
-                    object[_] = color 
-                end 
-            end 
-        end 
+            for m, object in next, property do
+                if object[_] == themes.preset[theme] or object.ClassName == "UIGradient" then
+                    object[_] = color
+                end
+            end
+        end
 
-        themes.preset[theme] = color 
-    end 
+        themes.preset[theme] = color
+    end
 
     function library:connection(signal, callback)
         local connection = signal:Connect(callback)
         
         insert(library.connections, connection)
 
-        return connection 
+        return connection
     end
 
-    function library:applyStroke(parent) 
+    function library:applyStroke(parent)
         local STROKE = library:create("UIStroke", {
             Parent = parent,
-            Color = themes.preset.text_outline, 
+            Color = themes.preset.text_outline,
             LineJoinMode = Enum.LineJoinMode.Miter
-        }) 
+        })
 
         library:applyTheme(STROKE, "text_outline", "Color")
     end
 
     function library:create(instance, options)
-        local ins = Instance.new(instance) 
+        local ins = Instance.new(instance)
         
-        for prop, value in next, options do 
+        for prop, value in next, options do
             ins[prop] = value
         end
         
-        return ins 
+        return ins
     end
 
-    function library:unloadMenu() 
-        if library.gui then 
+    function library:unloadMenu()
+        if library.gui then
             library.gui:Destroy()
         end
         
-        for index, connection in next, library.connections do 
-            connection:Disconnect() 
-            connection = nil 
-        end     
+        for index, connection in next, library.connections do
+            connection:Disconnect()
+            connection = nil
+        end
         
-        getgenv().library = nil 
-    end 
+        getgenv().library = nil
+    end
 
-    function library:initializeColorPicker(options) 
+    function library:initializeColorPicker(options)
         local cfg = {
-            name = options.name or "Color", 
+            name = options.name or "Color",
             flag = options.flag or tostring(2^789),
 
             color = options.color or color(1, 1, 1),
             alpha = options.alpha or 1,
 
             callback = options.callback or function() end,
-            open = false 
+            open = false
         }
 
         flags[cfg.flag] = {
             ["animation"] = "None",
             ["animationSpeed"] = 0.2,
             ["color1"] = {
-                Color3.fromRGB(255, 255, 255), 
-                0  
+                Color3.fromRGB(255, 255, 255),
+                0
             },
             ["color2"] = {
-                Color3.fromRGB(255, 0, 255), 
+                Color3.fromRGB(255, 0, 255),
                 0
             }
-        } 
+        }
 
         local flagDirectory = flags[cfg.flag]
 
@@ -472,13 +471,13 @@
         local OUTLINE = library:create("Frame", {
             Parent = library.gui,
             Name = "",
-            Visible = false, 
+            Visible = false,
             Position = dim2(0, 120, 0, 228),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(0, 150, 0, 150),
             BorderSizePixel = 0,
             BackgroundColor3 = rgb(1, 1, 1),
-            ZIndex = 999, 
+            ZIndex = 999,
         })
 
         library:draggify(OUTLINE)
@@ -494,7 +493,7 @@
             Size = dim2(1, -2, 1, -2),
             BorderSizePixel = 0,
             BackgroundColor3 = rgb(45, 45, 45)
-        })  
+        })
         
         local INSTANCE_HOLDERS = library:create("Frame", {
             Parent = inline,
@@ -506,7 +505,7 @@
             BackgroundColor3 = rgb(12, 12, 12)
         })
 
-        local h, s, v = color(1, 1, 1):ToHSV() 
+        local h, s, v = color(1, 1, 1):ToHSV()
         local a = 0
 
             local colorpicker_picker = library:create("Frame", {
@@ -559,21 +558,21 @@
                 ZIndex = 2,
                 BorderSizePixel = 0,
                 BackgroundColor3 = rgb(255, 255, 255),
-                ZIndex = 3, 
+                ZIndex = 3,
             })
             
             library:create("UIStroke", {
                 Parent = dragging_sat_val,
                 Name = "",
                 LineJoinMode = Enum.LineJoinMode.Miter
-            })                
+            })
             
             local sat = library:create("TextButton", {
                 Parent = background,
                 Name = "",
                 Size = dim2(1, 0, 1, 0),
-                Text = "", 
-                AutoButtonColor = false, 
+                Text = "",
+                AutoButtonColor = false,
                 BorderColor3 = rgb(0, 0, 0),
                 ZIndex = 2,
                 BorderSizePixel = 0,
@@ -591,8 +590,8 @@
             local val = library:create("TextButton", {
                 Parent = background,
                 Name = "",
-                Text = "", 
-                AutoButtonColor = false, 
+                Text = "",
+                AutoButtonColor = false,
                 Rotation = 180,
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, 0, 1, 0),
@@ -609,8 +608,8 @@
             local hue = library:create("TextButton", {
                 Parent = colorpicker_picker,
                 Name = "",
-                Text = "", 
-                AutoButtonColor = false, 
+                Text = "",
+                AutoButtonColor = false,
                 AnchorPoint = vec2(1, 0),
                 Position = dim2(1, -32, 0, 6),
                 BorderColor3 = rgb(0, 0, 0),
@@ -658,8 +657,8 @@
             local alpha = library:create("TextButton", {
                 Parent = colorpicker_picker,
                 Name = "",
-                Text = "", 
-                AutoButtonColor = false, 
+                Text = "",
+                AutoButtonColor = false,
                 AnchorPoint = vec2(1, 0),
                 Position = dim2(1, -8, 0, 6),
                 BorderColor3 = rgb(0, 0, 0),
@@ -721,7 +720,7 @@
             cfg["animations"] = library:create("Frame", {
                 Parent = INSTANCE_HOLDERS,
                 Name = "",
-                Visible = false, 
+                Visible = false,
                 BackgroundTransparency = 1,
                 Position = dim2(0, 0, 0, 20),
                 BorderColor3 = rgb(0, 0, 0),
@@ -751,47 +750,47 @@
             local elements = setmetatable(cfg, library)
 
             local dropdown = elements:addDropdown({
-                name = "animation", 
+                name = "animation",
                 items = {"None", "Fade", "Rainbow"},
                 ignore = true,
-                multi = false, 
+                multi = false,
                 callback = function(option)
                     flagDirectory["animation"] = option
 
-                    if color2 then 
+                    if color2 then
                         color1.setVisible(false)
                         color2.setVisible(false)
-                    end 
-                end 
+                    end
+                end
             })
 
             local color1 = dropdown:addColorPicker({
-                color = rgb(255, 255, 255), 
-                alpha = 1, 
+                color = rgb(255, 255, 255),
+                alpha = 1,
                 animation = "single",
-                ignore = true, 
+                ignore = true,
                 callback = function(color, alpha)
                     flagDirectory["color1"] = {color, alpha}
                 end
-            }) 
+            })
 
             local color2 = dropdown:addColorPicker({
-                color = rgb(255, 255, 255), 
-                alpha = 1, 
+                color = rgb(255, 255, 255),
+                alpha = 1,
                 animation = "single",
-                ignore = true, 
+                ignore = true,
                 callback = function(color, alpha)
                     flagDirectory["color2"] = {color, alpha}
                 end
-            })  
+            })
 
             elements:addSlider({
                 name = "animation speed",
-                min = 0, 
-                max = 100, 
-                default = 0.2, 
-                interval = 0.01, 
-                suffix = "%", 
+                min = 0,
+                max = 100,
+                default = 0.2,
+                interval = 0.01,
+                suffix = "%",
                 callback = function(int)
                     flagDirectory["animationSpeed"] = int
                 end
@@ -852,38 +851,38 @@
                 PaddingLeft = dim(0, 10)
             })
 
-            function cfg.updateColor() 
-                local mouse = uis:GetMouseLocation() 
+            function cfg.updateColor()
+                local mouse = uis:GetMouseLocation()
                 
-                if draggingSaturation then	
+                if draggingSaturation then
                     s = clamp((vec2(mouse.X, mouse.Y - gui_offset) - val.AbsolutePosition).X / val.AbsoluteSize.X, 0, 1)
                     v = 1 - clamp((vec2(mouse.X, mouse.Y - gui_offset) - sat.AbsolutePosition).Y / sat.AbsoluteSize.Y, 0, 1)
-                elseif draggingHue then 
+                elseif draggingHue then
                     h = clamp(1 - (vec2(mouse.X, mouse.Y - gui_offset) - hue.AbsolutePosition).Y / hue.AbsoluteSize.Y, 0, 1)
-                elseif draggingAlpha then 
+                elseif draggingAlpha then
                     a = clamp((vec2(mouse.X, mouse.Y - gui_offset) - alpha.AbsolutePosition).Y / alpha.AbsoluteSize.Y, 0, 1)
                 end
 
                 cfg.set(nil, nil)
-            end  
+            end
 
             function cfg.setVisible(bool)
                 cfg.outline.Visible = bool
 
-                if bool then 
+                if bool then
                     library:closeCurrentElement(cfg)
-                    library.current_element_open = cfg 
+                    library.current_element_open = cfg
                 end
-            end 
+            end
 
-            function cfg.set(color, alpha)                    
-                if color then 
+            function cfg.set(color, alpha)
+                if color then
                     h, s, v = color:ToHSV()
-                end 
+                end
                 
-                if alpha then 
+                if alpha then
                     a = alpha
-                end 
+                end
                 
                 local Color = hsv(h, s, v)
                 
@@ -902,97 +901,97 @@
                     val.BackgroundColor3 = hsv(h, 1, 1)
                     sat.BackgroundColor3 = hsv(h, 1, 1)
 
-                    options.alphaPath.ImageTransparency = a 
+                    options.alphaPath.ImageTransparency = a
                     options.colorPath.BackgroundColor3 = Color
 
-                if cfg.callback then 
+                if cfg.callback then
                     cfg.callback(Color, a)
-                end 
+                end
 
                 flags[cfg.flag] = {
-                    Color = Color, 
+                    Color = Color,
                     Transparency = a,
                 }
-            end 
+            end
 
             cfg.set(cfg.color, cfg.alpha)
 
             colorpicker_tab.MouseButton1Click:Connect(function()
-                cfg["animations"].Visible = false 
-                colorpicker_picker.Visible = true 
+                cfg["animations"].Visible = false
+                colorpicker_picker.Visible = true
 
                 colorpicker_tab.TextColor3 = themes.preset.accent
                 cfg["animations_tab"].TextColor3 = rgb(180, 180, 180)
             end)
 
             cfg["animations_tab"].MouseButton1Click:Connect(function()
-                cfg["animations"].Visible = true 
-                colorpicker_picker.Visible = false 
+                cfg["animations"].Visible = true
+                colorpicker_picker.Visible = false
 
                 colorpicker_tab.TextColor3 = rgb(180, 180, 180)
                 cfg["animations_tab"].TextColor3 = themes.preset.accent
             end)
 
                 alpha.MouseButton1Down:Connect(function()
-                    draggingAlpha = true 
-                end)    
+                    draggingAlpha = true
+                end)
     
                 hue.MouseButton1Down:Connect(function()
-                    draggingHue = true 
+                    draggingHue = true
                 end)
     
                 sat.MouseButton1Down:Connect(function()
-                    draggingSaturation = true  
+                    draggingSaturation = true
                 end)
     
                 uis.InputEnded:Connect(function(input)
                     if input.UserInputType == Enum.UserInputType.MouseButton1 then
                         draggingSaturation = false
                         draggingHue = false
-                        draggingAlpha = false 
+                        draggingAlpha = false
                     end
                 end)
                 
                 uis.InputChanged:Connect(function(input)
-                    if (draggingSaturation or draggingHue or draggingAlpha) and input.UserInputType == Enum.UserInputType.MouseMovement then
-                        cfg.updateColor() 
+                    if (draggingSaturation or draggingHue or draggingAlpha) and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+                        cfg.updateColor()
                     end
-                end)	
+                end)
 
             task.spawn(function()
-                while true do 
-                    local anim = flagDirectory["animation"] 
+                while true do
+                    local anim = flagDirectory["animation"]
 
-                    if anim ~= "None" then 
-                        local color; 
-                        local alpha; 
+                    if anim ~= "None" then
+                        local color;
+                        local alpha;
                         local sin = abs(sin(tick() * flagDirectory["animationSpeed"]))
 
                         color = anim == "Rainbow" and hsv(sin, 1, 1) or flagDirectory["color2"][1]:Lerp(flagDirectory["color1"][1], sin)
-                        alpha = anim == "Rainbow" and a or library.lerp(flagDirectory["color2"][2], flagDirectory["color1"][2], sin) 
+                        alpha = anim == "Rainbow" and a or library.lerp(flagDirectory["color2"][2], flagDirectory["color1"][2], sin)
 
                         cfg.set(color, alpha)
-                    end 
+                    end
 
-                    task.wait() 
-                end 
+                    task.wait()
+                end
             end)
             
             return setmetatable(cfg, library)
-    end 
+    end
 
-    function library:keyPicker(options) 
+    function library:keyPicker(options)
         local cfg = {
-            name = options.name or "Color", 
+            name = options.name or "Color",
             flag = options.flag or tostring(2^789),
 
             color = options.color or color(1, 1, 1),
             alpha = options.alpha or 1,
 
-            ignore = options.ignore or false, 
+            ignore = options.ignore or false,
 
             callback = options.callback or function() end,
-            open = false 
+            open = false
         }
 
         local draggingSaturation = false
@@ -1002,13 +1001,13 @@
         local OUTLINE = library:create("Frame", {
             Parent = library.gui,
             Name = "",
-            Visible = false, 
+            Visible = false,
             Position = dim2(0, 120, 0, 228),
             BorderColor3 = rgb(0, 0, 0),
             Size = dim2(0, 261, 0, 236),
             BorderSizePixel = 0,
             BackgroundColor3 = rgb(1, 1, 1),
-            ZIndex = 999, 
+            ZIndex = 999,
         })
 
         library:draggify(OUTLINE)
@@ -1024,7 +1023,7 @@
             Size = dim2(1, -2, 1, -2),
             BorderSizePixel = 0,
             BackgroundColor3 = rgb(45, 45, 45)
-        })  
+        })
         
         local INSTANCE_HOLDERS = library:create("Frame", {
             Parent = inline,
@@ -1036,7 +1035,7 @@
             BackgroundColor3 = rgb(12, 12, 12)
         })
 
-        local h, s, v = color(1, 1, 1):ToHSV() 
+        local h, s, v = color(1, 1, 1):ToHSV()
         local a = 0
 
             local colorpicker_picker = library:create("Frame", {
@@ -1089,21 +1088,21 @@
                 ZIndex = 2,
                 BorderSizePixel = 0,
                 BackgroundColor3 = rgb(255, 255, 255),
-                ZIndex = 3, 
+                ZIndex = 3,
             })
             
             library:create("UIStroke", {
                 Parent = dragging_sat_val,
                 Name = "",
                 LineJoinMode = Enum.LineJoinMode.Miter
-            })                
+            })
             
             local sat = library:create("TextButton", {
                 Parent = background,
                 Name = "",
                 Size = dim2(1, 0, 1, 0),
-                Text = "", 
-                AutoButtonColor = false, 
+                Text = "",
+                AutoButtonColor = false,
                 BorderColor3 = rgb(0, 0, 0),
                 ZIndex = 2,
                 BorderSizePixel = 0,
@@ -1121,8 +1120,8 @@
             local val = library:create("TextButton", {
                 Parent = background,
                 Name = "",
-                Text = "", 
-                AutoButtonColor = false, 
+                Text = "",
+                AutoButtonColor = false,
                 Rotation = 180,
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, 0, 1, 0),
@@ -1139,8 +1138,8 @@
             local hue = library:create("TextButton", {
                 Parent = colorpicker_picker,
                 Name = "",
-                Text = "", 
-                AutoButtonColor = false, 
+                Text = "",
+                AutoButtonColor = false,
                 AnchorPoint = vec2(1, 0),
                 Position = dim2(1, -32, 0, 6),
                 BorderColor3 = rgb(0, 0, 0),
@@ -1188,8 +1187,8 @@
             local alpha = library:create("TextButton", {
                 Parent = colorpicker_picker,
                 Name = "",
-                Text = "", 
-                AutoButtonColor = false, 
+                Text = "",
+                AutoButtonColor = false,
                 AnchorPoint = vec2(1, 0),
                 Position = dim2(1, -8, 0, 6),
                 BorderColor3 = rgb(0, 0, 0),
@@ -1288,38 +1287,38 @@
                 PaddingLeft = dim(0, 10)
             })
 
-            function cfg.updateColor() 
-                local mouse = uis:GetMouseLocation() 
+            function cfg.updateColor()
+                local mouse = uis:GetMouseLocation()
                 
-                if draggingSaturation then	
+                if draggingSaturation then
                     s = clamp((vec2(mouse.X, mouse.Y - gui_offset) - val.AbsolutePosition).X / val.AbsoluteSize.X, 0, 1)
                     v = 1 - clamp((vec2(mouse.X, mouse.Y - gui_offset) - sat.AbsolutePosition).Y / sat.AbsoluteSize.Y, 0, 1)
-                elseif draggingHue then 
+                elseif draggingHue then
                     h = clamp(1 - (vec2(mouse.X, mouse.Y - gui_offset) - hue.AbsolutePosition).Y / hue.AbsoluteSize.Y, 0, 1)
-                elseif draggingAlpha then 
+                elseif draggingAlpha then
                     a = clamp((vec2(mouse.X, mouse.Y - gui_offset) - alpha.AbsolutePosition).Y / alpha.AbsoluteSize.Y, 0, 1)
                 end
 
                 cfg.set(nil, nil)
-            end  
+            end
 
             function cfg.setVisible(bool)
                 cfg.outline.Visible = bool
 
-                if bool then 
+                if bool then
                     library:closeCurrentElement(cfg)
-                    library.current_element_open = cfg 
+                    library.current_element_open = cfg
                 end
-            end 
+            end
 
-            function cfg.set(color, alpha) 
-                if color then 
+            function cfg.set(color, alpha)
+                if color then
                     h, s, v = color:ToHSV()
-                end 
+                end
             
-                if alpha then 
+                if alpha then
                     a = alpha
-                end 
+                end
                 
                 local Color = hsv(h, s, v)
                 
@@ -1338,56 +1337,62 @@
                     val.BackgroundColor3 = hsv(h, 1, 1)
                     sat.BackgroundColor3 = hsv(h, 1, 1)
 
-                    options.alphaPath.ImageTransparency = a 
+                    options.alphaPath.ImageTransparency = a
                     options.colorPath.BackgroundColor3 = Color
 
-                if cfg.callback then 
+                if cfg.callback then
                     cfg.callback(Color, a)
-                end 
+                end
                 flags[cfg.flag] = {
                     Color = Color;
-                    Transparency = a 
+                    Transparency = a
                 }
-            end 
+            end
             
             cfg.set(cfg.color, cfg.alpha)
             
             library.config_flags[cfg.flag] = cfg.set
 
-                alpha.MouseButton1Down:Connect(function()
-                    draggingAlpha = true 
-                end)    
-    
-                hue.MouseButton1Down:Connect(function()
-                    draggingHue = true 
+                alpha.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        draggingAlpha = true
+                    end
                 end)
     
-                sat.MouseButton1Down:Connect(function()
-                    draggingSaturation = true  
+                hue.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        draggingHue = true
+                    end
+                end)
+    
+                sat.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        draggingSaturation = true
+                    end
                 end)
     
                 uis.InputEnded:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                         draggingSaturation = false
                         draggingHue = false
-                        draggingAlpha = false 
+                        draggingAlpha = false
                     end
                 end)
                 
                 uis.InputChanged:Connect(function(input)
-                    if (draggingSaturation or draggingHue or draggingAlpha) and input.UserInputType == Enum.UserInputType.MouseMovement then
-                        cfg.updateColor() 
+                    if (draggingSaturation or draggingHue or draggingAlpha) and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+                        cfg.updateColor()
                     end
-                end)	
+                end)
 
         return setmetatable(cfg, library)
-    end 
+    end
 
     function library:window(properties)
         local cfg = {
             name = properties.name or properties.Name or os.date('<font color="rgb(170,85,235)">obelus</font> | %b %d %Y | %H:%M'),
             size = properties.size or properties.Size or dim2(0, 516, 0.9, 0),
-            selected_tab, 
+            selected_tab,
             is_closing_menu = false,
         }
 
@@ -1483,7 +1488,7 @@
                 BackgroundTransparency = 1,
                 Position = dim2(0, 0, 0, 29),
                 BorderColor3 = rgb(0, 0, 0),
-                Size = dim2(0, TAB_WIDTH, 1, -29), 
+                Size = dim2(0, TAB_WIDTH, 1, -29),
                 BorderSizePixel = 0,
                 BackgroundColor3 = rgb(255, 255, 255)
             })
@@ -1493,24 +1498,24 @@
                 Name = "",
                 FillDirection = Enum.FillDirection.Vertical,
                 HorizontalAlignment = Enum.HorizontalAlignment.Center,
-                Padding = dim(0, 10),
+                Padding = dim(0, 0),
                 SortOrder = Enum.SortOrder.LayoutOrder
             })
             
             library:create("UIPadding", {
                 Parent = background,
                 Name = "",
-                PaddingBottom = dim(0, 1), 
-                PaddingRight = dim(0, 1), 
-                PaddingLeft = dim(0, 1) 
+                PaddingBottom = dim(0, 1),
+                PaddingRight = dim(0, 1),
+                PaddingLeft = dim(0, 1)
             })
             
             local page_container = library:create("Frame", {
                 Parent = background,
                 Name = "",
-                Position = dim2(0, TAB_WIDTH, 0, 29), 
+                Position = dim2(0, TAB_WIDTH, 0, 29),
                 BorderColor3 = rgb(0, 0, 0),
-                Size = dim2(1, -TAB_WIDTH, 1, -29), 
+                Size = dim2(1, -TAB_WIDTH, 1, -29),
                 BorderSizePixel = 0,
                 BackgroundColor3 = rgb(0,0,0),
                 BackgroundTransparency = 1
@@ -1544,11 +1549,11 @@
                 Size = dim2(1, -2, 1, -2),
                 BorderSizePixel = 0,
                 BackgroundColor3 = rgb(13, 13, 13)
-            }) 
+            })
 
-            local old_data = {} 
-            local text_data = {} 
-            local image_data = {} 
+            local old_data = {}
+            local text_data = {}
+            local image_data = {}
             local scroll_data = {}
 
             function cfg.toggle_menu(bool)
@@ -1605,29 +1610,29 @@
                                 }, 0.5)
                             end
 
-                            if element:IsA("ScrollingFrame") then 
+                            if element:IsA("ScrollingFrame") then
                                 scroll_data[element] = element.ScrollBarImageTransparency
                                 library:tween(element, {
                                     ScrollBarImageTransparency = 1,
                                 }, 0.5)
-                            end 
+                            end
                         end
                     end
                     
                     task.delay(0.5, function()
-                        cfg.is_closing_menu = false 
+                        cfg.is_closing_menu = false
 
                     end)
                 end
             end
 
         return setmetatable(cfg, library)
-    end 
+    end
 
     function library:tab(properties)
         local cfg = {
-            name = properties.name or "visuals", 
-        } 
+            name = properties.name or "visuals",
+        }
 
             local outline = library:create("TextButton", {
                 Parent = self.tab_holder,
@@ -1637,7 +1642,7 @@
                 BorderColor3 = rgb(0, 0, 0),
                 Text = "",
                 AutoButtonColor = false,
-                Size = dim2(1, 0, 0, 40),
+                Size = dim2(1, 0, 0, 50),
                 BorderSizePixel = 0,
                 TextSize = 14,
                 BackgroundColor3 = rgb(0, 0, 0)
@@ -1668,7 +1673,7 @@
                 Name = "",
                 Rotation = 90,
                 Color = rgbseq{
-                    rgbkey(0, rgb(41, 41, 41)), 
+                    rgbkey(0, rgb(41, 41, 41)),
                     rgbkey(1, rgb(16, 16, 16))
                 }
             })
@@ -1692,7 +1697,7 @@
             cfg["page"] = library:create("Frame", {
                 Parent = self.page_holder,
                 Name = "",
-                Visible = false, 
+                Visible = false,
                 Position = dim2(0, 1, 0, 1),
                 BorderColor3 = rgb(0, 0, 0),
                 Size = dim2(1, -2, 1, -2),
@@ -1719,43 +1724,43 @@
                 PaddingLeft = dim(0, 11)
             })
 
-        function cfg.open_tab() 
-            library:closeCurrentElement() 
+        function cfg.open_tab()
+            library:closeCurrentElement()
 
-            if self.selected_tab then 
+            if self.selected_tab then
                 self.selected_tab[1].TextColor3 = rgb(160,160,160)
-                self.selected_tab[2].Visible = false 
+                self.selected_tab[2].Visible = false
                 self.selected_tab[3].Color = rgbseq{
                     rgbkey(0, rgb(41, 41, 41)),
                     rgbkey(1, rgb(16, 16, 16))
                 }
 
-                self.selected_tab = nil 
-            end 
+                self.selected_tab = nil
+            end
 
             text.TextColor3 = themes.preset.accent
-            cfg["page"].Visible = true 
+            cfg["page"].Visible = true
             gradient.Color = rgbseq{
                 rgbkey(0, themes.preset.accent:Lerp(rgb(0,0,0), 0.2)),
                 rgbkey(1, themes.preset.accent:Lerp(rgb(0,0,0), 0.6))
             }
             self.selected_tab = {text, cfg["page"], gradient}
-        end 
+        end
 
         outline.MouseButton1Down:Connect(function()
             cfg.open_tab()
         end)
 
-        if not self.selected_tab then 
-            cfg.open_tab(true) 
-        end 
+        if not self.selected_tab then
+            cfg.open_tab(true)
+        end
 
-        return setmetatable(cfg, library)    
-    end 
+        return setmetatable(cfg, library)
+    end
 
     function library:column(properties)
         local cfg = {
-            fill = properties.fill or properties.Fill or false, 
+            fill = properties.fill or properties.Fill or false,
         }
 
         cfg["column"] = library:create("Frame", {
@@ -1772,18 +1777,18 @@
             Parent = cfg["column"],
             Name = "",
             Padding = dim(0, 12),
-            SortOrder = Enum.SortOrder.LayoutOrder, 
+            SortOrder = Enum.SortOrder.LayoutOrder,
             VerticalFlex = cfg.fill and Enum.UIFlexAlignment.Fill or Enum.UIFlexAlignment.None
         })
 
         return setmetatable(cfg, library)
-    end 
+    end
 
     function library:section(properties)
         local cfg = {
-            name = properties.name or properties.Name or "section", 
+            name = properties.name or properties.Name or "section",
             size = properties.size or properties.Size or dim2(1, 0, 1, -12)
-        }   
+        }
 
             local outline = library:create("Frame", {
                 Parent = self.column,
@@ -1817,7 +1822,7 @@
             local scrollbar_fill = library:create("Frame", {
                 Parent = background,
                 Name = "",
-                Visible = false, 
+                Visible = false,
                 Size = dim2(0, 5, 1, 0),
                 Position = dim2(1, -5, 0, 0),
                 BorderColor3 = rgb(0, 0, 0),
@@ -1919,20 +1924,20 @@
             })
 
             elements_scroll:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(function()
-                scrollbar_fill.Visible = elements_scroll.AbsoluteCanvasSize.Y > background.AbsoluteSize.Y and true or false 
+                scrollbar_fill.Visible = elements_scroll.AbsoluteCanvasSize.Y > background.AbsoluteSize.Y and true or false
             end)
 
         return setmetatable(cfg, library)
-    end 
+    end
 
-        function library:addToggle(options) 
+        function library:addToggle(options)
             local cfg = {
                 enabled = options.enabled or nil,
                 name = options.name or "Toggle",
                 flag = options.flag or tostring(random(1,9999999)),
                 
                 default = options.default or false,
-                folding = options.folding or false, 
+                folding = options.folding or false,
                 callback = options.callback or function() end,
             }
 
@@ -2086,50 +2091,50 @@
                     FillDirection = Enum.FillDirection.Vertical
                 })
 
-                function cfg.set(bool) 
-                    accent.Visible = bool 
+                function cfg.set(bool)
+                    accent.Visible = bool
                     cfg.callback(bool)
 
                     flags[cfg.flag] = bool
 
-                    if cfg.folding then 
+                    if cfg.folding then
                         cfg.background.Visible = bool
-                    end 
-                end 
+                    end
+                end
 
                 cfg.set(cfg.default)
 
                 library.config_flags[cfg.flag] = cfg.set
 
                 toggle_button.MouseButton1Click:Connect(function()
-                    cfg.enabled = not cfg.enabled 
+                    cfg.enabled = not cfg.enabled
                     cfg.set(cfg.enabled)
                 end)
 
                 text.MouseButton1Click:Connect(function()
-                    cfg.enabled = not cfg.enabled 
+                    cfg.enabled = not cfg.enabled
                     cfg.set(cfg.enabled)
                 end)
 
             return setmetatable(cfg, library)
         end
         
-        function library:addSlider(options) 
+        function library:addSlider(options)
             local cfg = {
                 name = options.name or nil,
                 suffix = options.suffix or "",
                 flag = options.flag or tostring(2^789),
-                callback = options.callback or function() end, 
+                callback = options.callback or function() end,
 
                 min = options.min or options.minimum or 0,
                 max = options.max or options.maximum or 100,
                 intervals = options.interval or options.decimal or 1,
                 default = options.default or 10,
-                value = options.default or 10, 
+                value = options.default or 10,
 
-                ignore = options.ignore or false, 
+                ignore = options.ignore or false,
                 dragging = false,
-            } 
+            }
 
                 local slider = library:create("TextLabel", {
                     Parent = self.elements or self.background or self.colorpickerElements,
@@ -2162,8 +2167,8 @@
                 local slider_dragger = library:create("TextButton", {
                     Parent = bottom_components,
                     Name = "",
-                    AutoButtonColor = false, 
-                    Text = "", 
+                    AutoButtonColor = false,
+                    Text = "",
                     Position = dim2(0, 0, 0, 2),
                     BorderColor3 = rgb(0, 0, 0),
                     Size = dim2(1, -27, 1, 8),
@@ -2234,7 +2239,7 @@
                     PaddingLeft = dim(0, 1)
                 })
                 
-                if cfg.name then 
+                if cfg.name then
                     local left_components = library:create("Frame", {
                         Parent = slider,
                         Name = "",
@@ -2273,9 +2278,9 @@
                         Name = "",
                         PaddingBottom = dim(0, 6)
                     })
-                end 
+                end
 
-                if not self.background then 
+                if not self.background then
                     local seperator = library:create("Frame", {
                         Parent = slider,
                         Name = "",
@@ -2285,9 +2290,9 @@
                         BorderSizePixel = 0,
                         BackgroundColor3 = rgb(255, 255, 255)
                     })
-                end 
+                end
 
-                function cfg.set(value) 
+                function cfg.set(value)
                     cfg.value = clamp(library:round(value, cfg.intervals), cfg.min, cfg.max)
 
                     fill.Size = dim2((cfg.value - cfg.min) / (cfg.max - cfg.min), 0, 1, 0)
@@ -2295,16 +2300,18 @@
 
                     flags[cfg.flag] = cfg.value
                     cfg.callback(flags[cfg.flag])
-                end 
+                end
 
                 cfg.set(cfg.default)
 
-                slider_dragger.MouseButton1Down:Connect(function()
-                    cfg.dragging = true 
+                slider_dragger.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        cfg.dragging = true
+                    end
                 end)
 
                 library:connection(uis.InputChanged, function(input)
-                    if cfg.dragging and input.UserInputType == Enum.UserInputType.MouseMovement then 
+                    if cfg.dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                         local size_x = (input.Position.X - slider_dragger.AbsolutePosition.X) / slider_dragger.AbsoluteSize.X
                         local value = ((cfg.max - cfg.min) * size_x) + cfg.min
 
@@ -2313,9 +2320,9 @@
                 end)
 
                 library:connection(uis.InputEnded, function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        cfg.dragging = false 
-                    end 
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        cfg.dragging = false
+                    end
                 end)
 
             cfg.set(cfg.default)
@@ -2323,27 +2330,27 @@
             config_flags[cfg.flag] = cfg.set
 
             return setmetatable(cfg, library)
-        end 
+        end
 
-        function library:addDropdown(options) 
+        function library:addDropdown(options)
             local cfg = {
                 name = options.name or nil,
                 flag = options.flag or tostring(random(1,9999999)),
 
                 items = options.items or {"1", "2", "3"},
                 callback = options.callback or function() end,
-                multi = options.multi or false, 
-                scrolling = options.scrolling or false, 
+                multi = options.multi or false,
+                scrolling = options.scrolling or false,
 
-                open = false, 
-                option_instances = {}, 
-                multi_items = {}, 
-                ignore = options.ignore or false, 
-            }   
+                open = false,
+                option_instances = {},
+                multi_items = {},
+                ignore = options.ignore or false,
+            }
 
             cfg.default = options.default or (cfg.multi and {cfg.items[1]}) or cfg.items[1]
 
-            flags[cfg.flag] = {} 
+            flags[cfg.flag] = {}
 
                 local dropdown_path = library:create("TextLabel", {
                     Parent = self.background or self.elements or self.colorpickerElements,
@@ -2396,7 +2403,7 @@
                 local dropdown = library:create("TextButton", {
                     Parent = bottom_components,
                     Name = "",
-                    AutoButtonColor = false, 
+                    AutoButtonColor = false,
                     Text = "",
                     Position = dim2(0, 0, 0, 2),
                     BorderColor3 = rgb(0, 0, 0),
@@ -2434,7 +2441,7 @@
                     Size = dim2(0, 5, 0, 3),
                     BorderSizePixel = 0,
                     BackgroundColor3 = rgb(255, 255, 255)
-                })  
+                })
 
                 local text = library:create("TextLabel", {
                     Parent = background,
@@ -2448,12 +2455,12 @@
                     Position = dim2(0, 7, 0, -1),
                     BorderSizePixel = 0,
                     TextSize = 12,
-                    TextXAlignment = Enum.TextXAlignment.Left, 
+                    TextXAlignment = Enum.TextXAlignment.Left,
                     TextTruncate = Enum.TextTruncate.AtEnd,
                     BackgroundColor3 = rgb(255, 255, 255)
-                })                    
+                })
                 
-                if cfg.name then 
+                if cfg.name then
                     local left_components = library:create("Frame", {
                         Parent = dropdown_path,
                         Name = "",
@@ -2492,7 +2499,7 @@
                         Name = "",
                         PaddingBottom = dim(0, 6)
                     })
-                end 
+                end
 
                 local UIPadding = library:create("UIPadding", {
                     Parent = dropdown,
@@ -2509,7 +2516,7 @@
                         BorderSizePixel = 0,
                         AutomaticSize = Enum.AutomaticSize.Y,
                         BackgroundColor3 = rgb(1, 1, 1),
-                        Visible = false, 
+                        Visible = false,
                         ZIndex = 999
                     })
                     
@@ -2548,7 +2555,7 @@
                         SortOrder = Enum.SortOrder.LayoutOrder
                     })
 
-                function cfg.renderOption(text) 
+                function cfg.renderOption(text)
                     local OPTION = library:create("TextButton", {
                         Parent = text_holder,
                         Name = "",
@@ -2566,29 +2573,29 @@
                     }); library:applyTheme(OPTION, "accent", "TextColor3")
 
                     return OPTION
-                end 
+                end
                 
-                function cfg.setVisible(bool) 
+                function cfg.setVisible(bool)
                     dropdown_holder.Visible = bool
 
-                    arrow.Rotation = bool and 180 or 0 
+                    arrow.Rotation = bool and 180 or 0
 
-                    if bool then 
+                    if bool then
                         library:closeCurrentElement(cfg)
-                        library.current_element_open = cfg 
+                        library.current_element_open = cfg
                     end
                 end
                 
-                function cfg.set(value) 
+                function cfg.set(value)
                     local selected = {}
                     local isTable = type(value) == "table"
 
-                    for _, option in next, cfg.option_instances do 
-                        if option.Text == value or (isTable and find(value, option.Text)) then 
+                    for _, option in next, cfg.option_instances do
+                        if option.Text == value or (isTable and find(value, option.Text)) then
                             insert(selected, option.Text)
                             cfg.multi_items = selected
                             option.TextColor3 = themes.preset.accent
-                        else 
+                        else
                             option.TextColor3 = rgb(160, 160, 160)
                         end
                     end
@@ -2596,34 +2603,34 @@
                     text.Text = isTable and concat(selected, ", ") or selected[1]
                     flags[cfg.flag] = isTable and selected or selected[1]
                         
-                    cfg.callback(flags[cfg.flag]) 
+                    cfg.callback(flags[cfg.flag])
                 end
                 
-                function cfg.refreshOptions(list) 
-                    for _, option in next, cfg.option_instances do 
-                        option:Destroy() 
+                function cfg.refreshOptions(list)
+                    for _, option in next, cfg.option_instances do
+                        option:Destroy()
                     end
                     
-                    cfg.option_instances = {} 
+                    cfg.option_instances = {}
 
-                    for _, option in next, list do 
+                    for _, option in next, list do
                         local OPTION_INSTANCE = cfg.renderOption(option)
                         insert(cfg.option_instances, OPTION_INSTANCE)
                         
                         OPTION_INSTANCE.MouseButton1Down:Connect(function()
-                            if cfg.multi then 
+                            if cfg.multi then
                                 local selected_index = find(cfg.multi_items, OPTION_INSTANCE.Text)
     
-                                if selected_index then 
+                                if selected_index then
                                     remove(cfg.multi_items, selected_index)
                                 else
                                     insert(cfg.multi_items, OPTION_INSTANCE.Text)
                                 end
     
-                                cfg.set(cfg.multi_items) 				
-                            else 
+                                cfg.set(cfg.multi_items)
+                            else
                                 cfg.setVisible(false)
-                                cfg.open = false 
+                                cfg.open = false
                                 
                                 cfg.set(OPTION_INSTANCE.Text)
                             end
@@ -2635,7 +2642,7 @@
                 cfg.set(cfg.default)
 
                 dropdown.MouseButton1Click:Connect(function()
-                    cfg.open = not cfg.open 
+                    cfg.open = not cfg.open
                     
                     cfg.setVisible(cfg.open)
                 end)
@@ -2649,25 +2656,25 @@
                 end)
 
             return setmetatable(cfg, library)
-        end 
+        end
         
-        function library:addColorPicker(options) 
+        function library:addColorPicker(options)
             local cfg = {
-                name = options.name or "Color", 
+                name = options.name or "Color",
                 flag = options.flag or tostring(2^789),
 
                 color = options.color or color(1, 1, 1),
                 alpha = options.alpha or 1,
 
-                open = false, 
+                open = false,
                 type = options.animation or "animation",
 
-                ignore = options.ignore or false, 
+                ignore = options.ignore or false,
 
                 callback = options.callback or function() end,
             }
 
-            flags[cfg.flag] = {} 
+            flags[cfg.flag] = {}
 
                 local outline = library:create("Frame", {
                     Parent = self.right_components,
@@ -2713,20 +2720,20 @@
                     Parent = outline,
                     Name = "",
                     Text = "",
-                    AutoButtonColor = false, 
-                    BackgroundTransparency = 1, 
+                    AutoButtonColor = false,
+                    BackgroundTransparency = 1,
                     BorderColor3 = rgb(0, 0, 0),
                     Size = dim2(1, 0, 1, 0),
                     BorderSizePixel = 0,
-                    ZIndex = 2, 
+                    ZIndex = 2,
                     BackgroundColor3 = rgb(2, 2, 2)
                 })
             
             local colorpicker = library:keyPicker(cfg)
             
                 button.MouseButton1Click:Connect(function()
-                    colorpicker.open = not colorpicker.open 
-                    colorpicker.setVisible(colorpicker.open)              
+                    colorpicker.open = not colorpicker.open
+                    colorpicker.setVisible(colorpicker.open)
                 end)
 
                 button:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
@@ -2736,7 +2743,7 @@
                 colorpicker.outline.Position = dim_offset(button.AbsolutePosition.X + 1, button.AbsolutePosition.Y + button.AbsoluteSize.Y + 63)
 
             return setmetatable(cfg, library)
-        end 
+        end
 
         function library:addLabel(options)
             local cfg = {
@@ -2834,9 +2841,9 @@
                 })
 
             return setmetatable(cfg, library)
-        end 
+        end
         
-        function library:addTextBox(options) 
+        function library:addTextBox(options)
             local cfg = {
                 name = options.name or "TextBox",
                 placeholder = options.placeholder or options.placeholdertext or options.holder or options.holdertext or "type here...",
@@ -2980,46 +2987,46 @@
                     PaddingBottom = dim(0, 6)
                 })
             
-                function cfg.set(text) 
+                function cfg.set(text)
                     flags[cfg.flag] = text
                     textbox.Text = text
                     cfg.callback(text)
-                end 
+                end
 
-                if cfg.default then 
-                    cfg.set(cfg.default) 
-                end 
+                if cfg.default then
+                    cfg.set(cfg.default)
+                end
 
                 textbox:GetPropertyChangedSignal("Text"):Connect(function()
-                    cfg.set(textbox.Text) 
+                    cfg.set(textbox.Text)
                 end)
             
             return setmetatable(cfg, library)
-        end 
+        end
         
-        function library:addKeyBind(options) 
+        function library:addKeyBind(options)
             local cfg = {
                 flag = options.flag or "SET ME A FLAG NOWWW!!!!",
                 callback = options.callback or function() end,
                 open = false,
-                binding = nil, 
-                name = options.name or nil, 
-                ignore_key = options.ignore or false, 
+                binding = nil,
+                name = options.name or nil,
+                ignore_key = options.ignore or false,
 
-                key = options.key or nil, 
+                key = options.key or nil,
                 mode = options.mode or "toggle",
-                active = options.default or false, 
+                active = options.default or false,
 
                 hold_instances = {},
             }
 
-            flags[cfg.flag] = {} 
+            flags[cfg.flag] = {}
 
                 local outline = library:create("TextButton", {
                     Parent = self.right_components,
                     Name = "",
-                    Text = "", 
-                    AutoButtonColor = false, 
+                    Text = "",
+                    AutoButtonColor = false,
                     BorderColor3 = rgb(0, 0, 0),
                     BackgroundTransparency = 1,
                     SelectionOrder = -1,
@@ -3047,8 +3054,8 @@
                 })
                 
             
-            function cfg.set_mode(mode) 
-                cfg.mode = mode 
+            function cfg.set_mode(mode)
+                cfg.mode = mode
 
                 if mode == "always" then
                     cfg.set(true)
@@ -3057,33 +3064,33 @@
                 end
 
                 flags[cfg.flag]["mode"] = mode
-            end 
+            end
 
             function cfg.set(input)
-                if type(input) == "boolean" then 
-                    local __cached = input 
+                if type(input) == "boolean" then
+                    local __cached = input
 
-                    if cfg.mode == "always" then 
-                        __cached = true 
-                    end 
+                    if cfg.mode == "always" then
+                        __cached = true
+                    end
 
-                    cfg.active = __cached 
+                    cfg.active = __cached
                     cfg.callback(__cached)
-                elseif tostring(input):find("Enum") then 
+                elseif tostring(input):find("Enum") then
                     input = input.Name == "Escape" and "..." or input
 
-                    cfg.key = input or "..."	
+                    cfg.key = input or "..."
 
                     cfg.callback(cfg.active or false)
-                elseif find({"toggle", "hold", "always"}, input) then 
+                elseif find({"toggle", "hold", "always"}, input) then
                     cfg.set_mode(input)
 
-                    if input == "always" then 
-                        cfg.active = true 
-                    end 
+                    if input == "always" then
+                        cfg.active = true
+                    end
 
                     cfg.callback(cfg.active or false)
-                elseif type(input) == "table" then 
+                elseif type(input) == "table" then
                     input.key = type(input.key) == "string" and input.key ~= "..." and library:convertEnum(input.key) or input.key
 
                     input.key = input.key == Enum.KeyCode.Escape and "..." or input.key
@@ -3094,11 +3101,11 @@
                     if input.active then
                         cfg.active = input.active
                     end
-                end 
+                end
 
                 flags[cfg.flag] = {
                     mode = cfg.mode,
-                    key = cfg.key, 
+                    key = cfg.key,
                     active = cfg.active
                 }
 
@@ -3111,38 +3118,38 @@
             
                 outline.MouseButton1Down:Connect(function()
                     task.wait()
-                    text_label.Text = "[ ... ]"	
+                    text_label.Text = "[ ... ]"
 
-                    cfg.binding = library:connection(uis.InputBegan, function(keycode, game_event)  
+                    cfg.binding = library:connection(uis.InputBegan, function(keycode, game_event)
                         cfg.set(keycode.KeyCode)
 
-                        cfg.binding:Disconnect() 
+                        cfg.binding:Disconnect()
                         cfg.binding = nil
                     end)
                 end)
 
-                library:connection(uis.InputBegan, function(input, game_event) 
-                    if not game_event then 
-                        if input.KeyCode == cfg.key then 
-                            if cfg.mode == "toggle" then 
+                library:connection(uis.InputBegan, function(input, game_event)
+                    if not game_event then
+                        if input.KeyCode == cfg.key then
+                            if cfg.mode == "toggle" then
                                 cfg.active = not cfg.active
                                 cfg.set(cfg.active)
-                            elseif cfg.mode == "hold" then 
+                            elseif cfg.mode == "hold" then
                                 cfg.set(true)
                             end
                         end
                     end
                 end)
 
-                library:connection(uis.InputEnded, function(input, game_event) 
-                    if game_event then 
-                        return 
-                    end 
+                library:connection(uis.InputEnded, function(input, game_event)
+                    if game_event then
+                        return
+                    end
 
                     local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
         
                     if selected_key == cfg.key then
-                        if cfg.mode == "hold" then 
+                        if cfg.mode == "hold" then
                             cfg.set(false)
                         end
                     end
@@ -3157,16 +3164,16 @@
 
         function library:addList(options)
             local cfg = {
-                callback = options and options.callback or function() end, 
-                name = options.name or nil, 
+                callback = options and options.callback or function() end,
+                name = options.name or nil,
 
-                scale = options.size or 232, 
-                items = options.items or {"1", "2", "3"}, 
+                scale = options.size or 232,
+                items = options.items or {"1", "2", "3"},
                 visible = options.visible or true,
         
-                option_instances = {}, 
-                current_instance = nil, 
-                flag = options.flag or "flag", 
+                option_instances = {},
+                current_instance = nil,
+                flag = options.flag or "flag",
         
             }
         
@@ -3201,7 +3208,7 @@
                 local list = library:create("TextButton", {
                     Parent = bottom_components,
                     Name = "",
-                    AutoButtonColor = false, 
+                    AutoButtonColor = false,
                     Text = "",
                     Position = dim2(0, 0, 0, 2),
                     BorderColor3 = rgb(0, 0, 0),
@@ -3228,12 +3235,12 @@
                     Size = dim2(1, -2, 1, -2),
                     BorderSizePixel = 0,
                     BackgroundColor3 = rgb(25, 25, 25)
-                })         
+                })
 
                 local scrollbar_fill = library:create("Frame", {
                     Parent = background,
                     Name = "",
-                    Visible = false, 
+                    Visible = false,
                     Size = dim2(0, 5, 1, 0),
                     Position = dim2(1, -5, 0, 0),
                     BorderColor3 = rgb(0, 0, 0),
@@ -3274,7 +3281,7 @@
                     FillDirection = Enum.FillDirection.Vertical
                 })
                 
-                if cfg.name then 
+                if cfg.name then
                     local left_components = library:create("Frame", {
                         Parent = list_path,
                         Name = "",
@@ -3313,7 +3320,7 @@
                         Name = "",
                         PaddingBottom = dim(0, 6)
                     })
-                end 
+                end
         
                 local UIPadding = library:create("UIPadding", {
                     Parent = list,
@@ -3321,7 +3328,7 @@
                     PaddingLeft = dim(0, 1)
                 })
             
-                function cfg.render_option(text) 
+                function cfg.render_option(text)
                     local text = library:create("TextButton", {
                         Parent = ScrollingFrame,
                         Name = "",
@@ -3335,66 +3342,66 @@
                         BorderSizePixel = 0,
                         TextSize = 12,
                         AutomaticSize = Enum.AutomaticSize.Y,
-                        TextXAlignment = Enum.TextXAlignment.Left, 
+                        TextXAlignment = Enum.TextXAlignment.Left,
                         TextTruncate = Enum.TextTruncate.AtEnd,
                         BackgroundColor3 = rgb(255, 255, 255)
-                    })       
+                    })
             
-                    return text 
-                end 
+                    return text
+                end
             
                 function cfg.refresh_options(options)
-                    for _, v in next, cfg.option_instances do 
-                        v:Destroy() 
-                    end 
+                    for _, v in next, cfg.option_instances do
+                        v:Destroy()
+                    end
             
-                    for _, option in next, options do 
-                        local button = cfg.render_option(option) 
+                    for _, option in next, options do
+                        local button = cfg.render_option(option)
             
                         insert(cfg.option_instances, button)
             
                         button.MouseButton1Click:Connect(function()
-                            if cfg.current_instance and cfg.current_instance ~= button then 
-                                cfg.current_instance.TextColor3 = rgb(180, 180, 180) 
-                            end 
+                            if cfg.current_instance and cfg.current_instance ~= button then
+                                cfg.current_instance.TextColor3 = rgb(180, 180, 180)
+                            end
             
-                            cfg.current_instance = button 
-                            button.TextColor3 = themes.preset.accent 
+                            cfg.current_instance = button
+                            button.TextColor3 = themes.preset.accent
             
                             flags[cfg.flag] = button.text
                             
                             cfg.callback(button.text)
                         end)
-                    end 
+                    end
                 end
                 
                 function cfg.filter_options(text)
-                    for _, v in next, cfg.option_instances do 
-                        if string.find(v.Text, text) then 
-                            v.Visible = true 
-                        else 
+                    for _, v in next, cfg.option_instances do
+                        if string.find(v.Text, text) then
+                            v.Visible = true
+                        else
                             v.Visible = false
                         end
                     end
                 end
         
                 function cfg.set(value)
-                    for _, buttons in next, cfg.option_instances do 
-                        if buttons.Text == value then 
-                            buttons.TextColor3 = themes.preset.accent 
-                        else 
-                            buttons.TextColor3 = rgb(180, 180, 180) 
-                        end 
-                    end 
+                    for _, buttons in next, cfg.option_instances do
+                        if buttons.Text == value then
+                            buttons.TextColor3 = themes.preset.accent
+                        else
+                            buttons.TextColor3 = rgb(180, 180, 180)
+                        end
+                    end
         
                     flags[cfg.flag] = value
                     cfg.callback(value)
-                end 
+                end
         
-                cfg.refresh_options(cfg.items) 
+                cfg.refresh_options(cfg.items)
                 
                 ScrollingFrame:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(function()
-                    scrollbar_fill.Visible = ScrollingFrame.AbsoluteCanvasSize.Y > background.AbsoluteSize.Y and true or false 
+                    scrollbar_fill.Visible = ScrollingFrame.AbsoluteCanvasSize.Y > background.AbsoluteSize.Y and true or false
                 end)
 
             library.config_flags[cfg.flag] = cfg.set
@@ -3404,7 +3411,7 @@
 
         function library:addButton(options)
             local cfg = {
-                callback = options.callback or function() end, 
+                callback = options.callback or function() end,
                 name = options.text or options.name or "Button",
             }
 
@@ -3427,7 +3434,7 @@
                 })
                 
                 local bottom_components = library:create("Frame", {
-                    Parent = button_holder, 
+                    Parent = button_holder,
                     Name = "",
                     Position = dim2(0, 14, 0, 0),
                     BorderColor3 = rgb(0, 0, 0),
@@ -3485,7 +3492,7 @@
                 })
 
                 button.MouseButton1Click:Connect(function()
-                    cfg.callback() 
+                    cfg.callback()
                 end)
                 
                 library:create("UIListLayout", {
@@ -3509,7 +3516,7 @@
         
     local notifications = library.notifications
 
-    function notifications:refresh_notifs() 
+    function notifications:refresh_notifs()
         local yOffset = 50
         for i, v in ipairs(notifications.notifs) do
             local Position = vec2(20, yOffset)
@@ -3519,11 +3526,11 @@
     end
     
     function notifications:fade(path, is_fading)
-        local fading = is_fading and 1 or 0 
+        local fading = is_fading and 1 or 0
         
         tween_service:Create(path, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundTransparency = fading}):Play()
 
-        for _, instance in path:GetDescendants() do 
+        for _, instance in path:GetDescendants() do
             if instance:IsA("UIStroke") then
                 tween_service:Create(instance, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Transparency = fading}):Play()
             elseif instance:IsA("TextLabel") then
@@ -3532,12 +3539,12 @@
                 tween_service:Create(instance, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundTransparency = fading}):Play()
             end
         end
-    end 
+    end
     
     function notifications:create_notification(options)
         local cfg = {
             name = options.name or "Hit: q3sm (finobe) in the Head for 100 Damage!",
-            outline; 
+            outline;
         }
         
             local outline = library:create("Frame", {
@@ -3556,7 +3563,7 @@
                 BorderSizePixel = 0;
                 AutomaticSize = Enum.AutomaticSize.XY;
                 BackgroundColor3 = rgb(21, 21, 21)
-            });	
+            });
             
             local uigradient = library:create("UIGradient", {
                 Color = rgbseq{rgbkey(0, rgb(255, 0, 0)), rgbkey(0.17, rgb(255, 255, 0)), rgbkey(0.33, rgb(0, 255, 0)), rgbkey(0.5, rgb(0, 255, 255)), rgbkey(0.67, rgb(0, 0, 255)), rgbkey(0.83, rgb(255, 0, 255)), rgbkey(1, rgb(255, 0, 0))};
@@ -3630,7 +3637,7 @@
             notifications.notifs[index] = nil
             notifications:fade(outline, true)
             task.wait(1)
-            outline:Destroy() 
+            outline:Destroy()
             notifications:refresh_notifs()
         end)
     end
