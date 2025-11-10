@@ -270,7 +270,7 @@
         local dragging = false
         local drag_start
         local start_pos
-
+    
         frame.InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = true
@@ -278,36 +278,41 @@
                 start_pos = frame.Position
             end
         end)
-
+    
         frame.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = false
             end
         end)
-
+    
         library:connection(uis.InputChanged, function(input, game_event)
             if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                 local viewport_size = camera.ViewportSize
                 local new_pos = start_pos + UDim2.fromOffset(input.Position.X - drag_start.X, input.Position.Y - drag_start.Y)
-
+    
                 local anchor_point = frame.AnchorPoint
                 local size = frame.AbsoluteSize
-
-                local min_abs_x = size.X * anchor_point.X
-                local max_abs_x = viewport_size.X - (size.X * (1 - anchor_point.X))
-                local min_abs_y = size.Y * anchor_point.Y
-                local max_abs_y = viewport_size.Y - (size.Y * (1 - anchor_point.Y))
-
-                local min_offset_x = min_abs_x - (viewport_size.X * new_pos.X.Scale)
-                local max_offset_x = max_abs_x - (viewport_size.X * new_pos.X.Scale)
-                local min_offset_y = min_abs_y - (viewport_size.Y * new_pos.Y.Scale)
-                local max_offset_y = max_abs_y - (viewport_size.Y * new_pos.Y.Scale)
-
+                local handle_size = 30 
+    
+                local min_abs_x = handle_size - size.X
+                local max_abs_x = viewport_size.X - handle_size
+                local min_abs_y = handle_size - size.Y
+                local max_abs_y = viewport_size.Y - handle_size
+    
+                local target_abs_x = viewport_size.X * new_pos.X.Scale + new_pos.X.Offset
+                local target_abs_y = viewport_size.Y * new_pos.Y.Scale + new_pos.Y.Offset
+    
+                local clamped_abs_x = clamp(target_abs_x, min_abs_x + size.X * anchor_point.X, max_abs_x + size.X * anchor_point.X)
+                local clamped_abs_y = clamp(target_abs_y, min_abs_y + size.Y * anchor_point.Y, max_abs_y + size.Y * anchor_point.Y)
+    
+                local final_offset_x = clamped_abs_x - (viewport_size.X * new_pos.X.Scale)
+                local final_offset_y = clamped_abs_y - (viewport_size.Y * new_pos.Y.Scale)
+    
                 frame.Position = UDim2.new(
                     new_pos.X.Scale,
-                    clamp(new_pos.X.Offset, min_offset_x, max_offset_x),
+                    final_offset_x,
                     new_pos.Y.Scale,
-                    clamp(new_pos.Y.Offset, min_offset_y, max_offset_y)
+                    final_offset_y
                 )
             end
         end)
