@@ -222,23 +222,23 @@
 		makefolder(library.directory .. path)
 	end 
 
-	writefile("ffff.ttf", game:HttpGet("https://github.com/weasely111/beta/raw/refs/heads/main/fs-tahoma-8px.ttf"))
+writefile("main.ttf", game:HttpGet("https://files.catbox.moe/fksdez.ttf"))
 
-	local tahoma = {
-		name = "SmallestPixel7",
-		faces = {
-			{
-				name = "Regular",
-				weight = 400,
-				style = "normal",
-				assetId = getcustomasset("ffff.ttf")
-			}
-		}
-	}
+local tahoma = {
+	name = "SmallestPixel7",
+	faces = {
+		{
+			name = "Regular",
+			weight = 400,
+			style = "normal",
+			assetId = getcustomasset("main.ttf"),
+		},
+	},
+}
 
-	writefile("dddd.ttf", http_service:JSONEncode(tahoma))
+writefile("main_encoded.ttf", http_service:JSONEncode(tahoma))
 
-	library.font = Font.new(getcustomasset("dddd.ttf"), Enum.FontWeight.Regular)
+library.font = Font.new(getcustomasset("main_encoded.ttf"), Enum.FontWeight.Regular)
 
 	local config_holder 
 -- 
